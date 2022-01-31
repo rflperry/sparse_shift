@@ -1,7 +1,0 @@
-README
-setup.py
-sparse_shift.egg-info/PKG-INFO
-sparse_shift.egg-info/SOURCES.txt
-sparse_shift.egg-info/dependency_links.txt
-sparse_shift.egg-info/requires.txt
-sparse_shift.egg-info/top_level.txt
