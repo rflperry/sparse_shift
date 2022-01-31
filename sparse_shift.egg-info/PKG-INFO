@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: sparse-shift
+Version: 1.0
+Summary: Conditional independence tools for causal learning under the sparse mechanism shift hypothesis.
+Home-page: UNKNOWN
+Author: ('Ronan Perry',)
+Author-email: rflperry@gmail.com
+License: UNKNOWN
+Description: Conditional independence tools for causal learning under the sparse mechanism shift hypothesis.
+Platform: UNKNOWN
