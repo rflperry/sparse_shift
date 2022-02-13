@@ -3,15 +3,15 @@
 # Author: Ronan Pery
 
 import numpy as np
-from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import pairwise_distances
 from sklearn.metrics.pairwise import pairwise_kernels
+from sklearn.model_selection import StratifiedShuffleSplit
 from joblib import Parallel, delayed
 from .utils import check_2d
 
 
-def _compute_kern(X, Y=None, metric='rbf', n_jobs=None, sigma=None):
+def _compute_kern(X, Y=None, metric="rbf", n_jobs=None, sigma=None):
     """Computes an RBF kernel matrix using median l2 distance as bandwidth"""
     X = check_2d(X)
     Y = check_2d(Y)
@@ -32,7 +32,7 @@ def _compute_kern(X, Y=None, metric='rbf', n_jobs=None, sigma=None):
     return pairwise_kernels(X, Y=Y, metric=metric, n_jobs=n_jobs, gamma=gamma), med
 
 
-class KCD():
+class KCD:
     """
     Kernel Conditional Discrepancy test.
 
@@ -77,15 +77,26 @@ class KCD():
     ----------
     sigma_x_ : float
         median l2 distance between conditional features X
-    sigma_x_ : float
+    sigma_y_ : float
         median l2 distance between target features Y 
     null_dist_ : list
         Null distribution of test statistics after calling test.
     e_hat_ : list
         Propensity score probabilities of samples being in group 1.
+
+    Notes
+    -----
+    Per [1], the regularization level should scale with n_samples**b,
+    where b is in (0, 0.5)
+
+    References
+    ----------
+    [1] J. Park, U. Shalit, B. Schölkopf, and K. Muandet, “Conditional Distributional
+        Treatment Effect with Kernel Conditional Mean Embeddings and U-Statistic
+        Regression,” arXiv:2102.08208, Jun. 2021.
     """
 
-    def __init__(self, compute_distance=None, reg=0.001, n_jobs=None, **kwargs):
+    def __init__(self, compute_distance=None, reg=1.0, n_jobs=None, **kwargs):
         self.compute_distance = compute_distance
         self.reg = reg
         self.kwargs = kwargs
@@ -255,18 +266,23 @@ class KCD():
 
         # Compute proensity scores
         # Note: for stability should maybe exclude samples w/ prob < 1/reps
-        self.e_hat_ = LogisticRegression(
-            n_jobs=self.n_jobs, penalty='l2', warm_start=True,
-            solver='lbfgs', C=1 / self.reg).fit(
-                K, z
-        ).predict_proba(K)[:, 1]
+        self.e_hat_ = (
+            LogisticRegression(
+                n_jobs=self.n_jobs,
+                penalty="l2",
+                warm_start=True,
+                solver="lbfgs",
+                C=1 / (2 * self.reg),
+            )
+            .fit(K, z)
+            .predict_proba(K)[:, 1]
+        )
 
         # Parallelization  storage cost of kernel matrices
         self.null_dist_ = np.array(
             Parallel(n_jobs=self.n_jobs)(
                 [
-                    delayed(self._statistic)(
-                        K, L, np.random.binomial(1, self.e_hat_))
+                    delayed(self._statistic)(K, L, np.random.binomial(1, self.e_hat_))
                     for _ in range(reps)
                 ]
             )
@@ -274,3 +290,327 @@ class KCD():
         pvalue = (1 + np.sum(self.null_dist_ >= stat)) / (1 + reps)
 
         return stat, pvalue
+
+
+class KCDCV:
+    """
+    Kernel Conditional Discrepancy test with cross validation for hyperparamter
+    selection based on test statistics SNR.
+
+    Parameters
+    ----------
+    compute_distance : str, callable, or None, default: "euclidean" or "gaussian"
+        A function that computes the distance among the samples within each
+        data matrix.
+        Valid strings for ``compute_distance`` are, as defined in
+        :func:`sklearn.metrics.pairwise_distances`,
+
+            - From scikit-learn: [``"euclidean"``, ``"cityblock"``, ``"cosine"``,
+              ``"l1"``, ``"l2"``, ``"manhattan"``] See the documentation for
+              :mod:`scipy.spatial.distance` for details
+              on these metrics.
+            - From scipy.spatial.distance: [``"braycurtis"``, ``"canberra"``,
+              ``"chebyshev"``, ``"correlation"``, ``"dice"``, ``"hamming"``,
+              ``"jaccard"``, ``"kulsinski"``, ``"mahalanobis"``, ``"minkowski"``,
+              ``"rogerstanimoto"``, ``"russellrao"``, ``"seuclidean"``,
+              ``"sokalmichener"``, ``"sokalsneath"``, ``"sqeuclidean"``,
+              ``"yule"``] See the documentation for :mod:`scipy.spatial.distance` for
+              details on these metrics.
+
+        Alternatively, this function computes the kernel similarity among the
+        samples within each data matrix.
+        Valid strings for ``compute_kernel`` are, as defined in
+        :func:`sklearn.metrics.pairwise.pairwise_kernels`,
+
+            [``"additive_chi2"``, ``"chi2"``, ``"linear"``, ``"poly"``,
+            ``"polynomial"``, ``"rbf"``,
+            ``"laplacian"``, ``"sigmoid"``, ``"cosine"``]
+
+        Note ``"rbf"`` and ``"gaussian"`` are the same metric.
+    regs : list, shape (n_regs,), default=(0.1, 1.0, 10)
+        List of kernel regularization values to try. Larger values correspond
+        to larger regularization.
+    n_jobs : int, optional
+        Number of jobs to run computations in parallel.
+    **kwargs
+        Arbitrary keyword arguments for ``compute_distance``.
+
+    Attributes
+    ----------
+    sigma_X0_ : float
+        median l2 distance between conditional features X0
+    sigma_X1_ : float
+        median l2 distance between conditional features X1
+    sigma_Y_ : float
+        median l2 distance between target features Y
+    snrs_ : 
+    reg_opt_ :
+    stat_ : 
+    stat_snr_ :
+    null_stats_ : list
+        Null distribution of test statistics after calling test.
+    null_vars_ :
+    e_hat_ : list
+        Propensity score probabilities of samples being in group 1.
+
+    References
+    ----------
+    [1] J. Park, U. Shalit, B. Schölkopf, and K. Muandet, “Conditional Distributional
+        Treatment Effect with Kernel Conditional Mean Embeddings and U-Statistic
+        Regression,” arXiv:2102.08208, Jun. 2021.
+    """
+
+    def __init__(
+        self, compute_distance=None, regs=(0.1, 1.0, 10), n_jobs=None, **kwargs
+    ):
+        self.compute_distance = compute_distance
+        self.regs = regs
+        self.kwargs = kwargs
+        self.n_jobs = n_jobs
+
+    def optimize_params(
+        self, X, Y, z, test_fraction=None, random_state=None
+    ):
+        X = check_2d(X)
+        Y = check_2d(Y)
+        self.n_samples_, self.n_features_ = X.shape
+
+        # Split data into train/test
+        self.train_idx_, self.test_idx_ = next(StratifiedShuffleSplit(
+            n_splits=1,
+            test_size=0.5 if test_fraction is None else test_fraction,
+            random_state=random_state,
+        ).split(np.zeros(self.n_samples_), z))
+
+        # compute K0, K1 on all data. split so as to compute separate sigmas
+        _, self.sigma_X_ = _compute_kern(
+            X[self.train_idx_], n_jobs=self.n_jobs
+        )
+
+        K00, self.sigma_X0_ = _compute_kern(
+            X[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_X_
+        )
+        K01, _ = _compute_kern(
+            X[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
+            X[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
+            sigma=self.sigma_X_,
+            n_jobs=self.n_jobs,
+        )
+        K0 = np.hstack((K00, K01))
+
+        K11, self.sigma_X1_ = _compute_kern(
+            X[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_X_,
+        )
+        K10, _ = _compute_kern(
+            X[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
+            X[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
+            sigma=self.sigma_X_,
+            n_jobs=self.n_jobs,
+        )
+        K1 = np.hstack((K11, K10))
+
+        # compute l0, l1 on training data
+        _, self.sigma_Y_ = _compute_kern(
+            Y[self.train_idx_],  # [np.array(1 - z[self.train_idx_], dtype=bool)],
+            n_jobs=self.n_jobs,
+        )
+        L0, _ = _compute_kern(
+            Y[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
+            Y[self.train_idx_],  # [np.array(1 - z[self.train_idx_], dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_Y_,
+        )
+
+        L1, _ = _compute_kern(
+            Y[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
+            Y[self.train_idx_],  # [np.array(z[self.train_idx_], dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_Y_,
+        )
+
+        # indices of groups 0 and 1 in L0, L1
+        # idx = np.asarray([0] * L10_train.shape[1] + [1] * L11_train.shape[1])
+        idx = z[self.train_idx_]
+
+        # Iterate over reg
+        # - compute W0, W1
+        # - compute mean, var of witness function
+        self.snrs_ = []
+        for reg in self.regs:  # could consider separate reg parameters
+            W0 = np.linalg.inv(K00 + reg * np.identity(K00.shape[0]))
+            K0W0 = np.mean(K0, axis=1).T @ W0
+            W1 = np.linalg.inv(K11 + reg * np.identity(K11.shape[0]))
+            K1W1 = np.mean(K1, axis=1).T @ W1
+
+            stat, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx)
+
+            self.snrs_.append(stat / np.sqrt(pooled_var))
+
+        # identify optimal reg
+        self.reg_opt_ = self.regs[np.argmax(np.abs(self.snrs_))]
+        self.h_sign_ = np.sign(self.snrs_[np.argmax(np.abs(self.snrs_))])
+
+        self.W0_ = np.linalg.inv(K00 + self.reg_opt_ * np.identity(K00.shape[0]))
+        self.W1_ = np.linalg.inv(K11 + self.reg_opt_ * np.identity(K11.shape[0]))
+
+        return self
+
+    def test(self, X, Y, z, reps=1000, random_state=None):
+        r"""
+        Calculates the *k*-sample test statistic and p-value using the optimal
+        regularization value learned during the optimize step.
+
+        Parameters
+        ----------
+        *args : ndarray
+            Variable length input data matrices. All inputs must have the same
+            number of dimensions. That is, the shapes must be `(n, p)` and
+            `(m, p)`, ... where `n`, `m`, ... are the number of samples and `p` is
+            the number of dimensions.
+        reps : int, default: 1000
+            The number of replications used to estimate the null distribution
+            when using the permutation test used to calculate the p-value.
+
+        Returns
+        -------
+        stat : float
+            The computed *k*-sample statistic.
+        pvalue : float
+            The computed *k*-sample p-value.
+        """
+        # if not hasattr(self, "reg_opt_"):
+        self.optimize_params(X, Y, z, random_state=random_state)
+
+        # compute K0, K1 on all data. split so as to compute separate sigmas
+        K00, _ = _compute_kern(
+            X[np.array(1 - z, dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_X_,
+        )
+        # K01, _ = _compute_kern(
+        #     X[np.array(1 - z, dtype=bool)],
+        #     X[np.array(z, dtype=bool)],
+        #     sigma=self.sigma_X_,
+        #     n_jobs=self.n_jobs,
+        # )
+        # K0 = np.hstack((K00, K01))
+
+        K11, _ = _compute_kern(
+            X[np.array(z, dtype=bool)],
+            n_jobs=self.n_jobs,
+            sigma=self.sigma_X_,
+        )
+        # K10, _ = _compute_kern(
+        #     X[np.array(z, dtype=bool)],
+        #     X[np.array(1 - z, dtype=bool)],
+        #     sigma=self.sigma_X_,
+        #     n_jobs=self.n_jobs,
+        # )
+        # K1 = np.hstack((K11, K10))
+
+        K, _ = _compute_kern(
+            X,
+            sigma=self.sigma_X_,
+            n_jobs=self.n_jobs,
+        )
+
+        #  W0, W1 of optimal reg
+        K0W0 = np.mean(
+            K[self.train_idx_][:, self.test_idx_][
+                np.array(1 - z[self.train_idx_], dtype=bool)
+                ],
+            axis=1).T @ self.W0_
+        K1W1 = np.mean(
+            K[self.train_idx_][:, self.test_idx_][
+                np.array(z[self.train_idx_], dtype=bool)
+                ],
+            axis=1).T @ self.W1_
+        # K1W1 = np.mean(K[np.array(z, dtype=bool)], axis=1).T @ self.W1_
+
+        # compute l0, l1 from test to train
+        L0, _ = _compute_kern(  # shape (tr0, te)
+            Y[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
+            Y[self.test_idx_],
+            sigma=self.sigma_Y_,
+            n_jobs=self.n_jobs,
+        )
+        L1, _ = _compute_kern(  # shape (tr1, te)
+            Y[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
+            Y[self.test_idx_],
+            sigma=self.sigma_Y_,
+            n_jobs=self.n_jobs,
+        )
+
+        # binary indices for test stat
+        idx = z[self.test_idx_]
+
+        self.stat_, pooled_var = self._statistic(
+            K0W0, L0, K1W1, L1, idx) 
+        self.stat_ *= self.h_sign_  # ensures learned kernel expectation for Y1 > Y0
+        self.stat_snr_ = self.stat_ / np.sqrt(pooled_var)
+
+        # permutation test via permute l0, l1 per propensity scores
+        # Note: for stability should maybe exclude samples w/ prob < 1/reps
+        # Is trained on entire dataset, but then subsetted in the test step
+        self.e_hat_ = (
+            LogisticRegression(
+                n_jobs=self.n_jobs,
+                penalty="l2",
+                warm_start=True,
+                solver="lbfgs",
+                C=1 / (2 * self.reg_opt_),
+                random_state=random_state,
+            )
+            .fit(K, z)
+            .predict_proba(K)[:, 1]
+        )
+
+        h_list = (K1W1 @ L1 - K0W0 @ L0) * self.h_sign_
+        # Parallelization, storage cost of kernel matrices
+        self.null_stats_, self.null_vars_ = np.array(
+            list(
+                zip(
+                    *Parallel(n_jobs=self.n_jobs)(
+                        [
+                            delayed(self._permute_statistic)(
+                                h_list,
+                                np.random.binomial(
+                                    1, self.e_hat_[self.test_idx_]),
+                            )
+                            for _ in range(reps)
+                        ]
+                    )
+                )
+            )
+        )
+        self.pvalue_ = (
+            1 + np.sum(self.null_stats_ >= self.stat_)
+            ) / (1 + reps)
+
+        return self.stat_, self.pvalue_
+
+    def _permute_statistic(self, h_list, idx):
+        h0_list = h_list[np.array(1 - idx, dtype=bool)]
+        h1_list = h_list[np.array(idx, dtype=bool)]
+
+        c = len(h0_list) / (len(h0_list) + len(h1_list))
+        pooled_var = np.var(h0_list) / c + np.var(h1_list) / (1 - c)
+        stat = np.mean(h1_list) - np.mean(h0_list)
+        return stat, pooled_var
+
+    def _statistic(self, K0W0, L0, K1W1, L1, idx):
+        # test statistic and variance
+        idx0 = np.array(1 - idx, dtype=bool)
+        idx1 = np.array(idx, dtype=bool)
+
+        h0_list = K0W0 @ L0[:, idx0] - K1W1 @ L1[:, idx0]
+        h1_list = K0W0 @ L0[:, idx1] - K1W1 @ L1[:, idx1]
+
+        c = len(h0_list) / (len(h0_list) + len(h1_list))
+        pooled_var = np.var(h0_list) / c + np.var(h1_list) / (1 - c)
+        stat = np.mean(h1_list) - np.mean(h0_list)
+        return stat, pooled_var

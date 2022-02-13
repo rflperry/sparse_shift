@@ -1,1 +1,1 @@
-from .kcd import KCD
+from .kcd import KCD, KCDCV
