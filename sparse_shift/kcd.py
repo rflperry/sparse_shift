@@ -233,7 +233,7 @@ class KCD:
 
     #     return var
 
-    def test(self, X, Y, z, reps=1000, random_state=None):
+    def test(self, X, Y, z, reps=1000, random_state=None, fast_pvalue=None):
         r"""
         Calculates the *k*-sample test statistic and p-value.
 
@@ -247,6 +247,8 @@ class KCD:
         reps : int, default: 1000
             The number of replications used to estimate the null distribution
             when using the permutation test used to calculate the p-value.
+        fast_pvalue : Ignored
+            Ignored
 
         Returns
         -------
@@ -532,8 +534,9 @@ class KCDCV:
         # permutation test via permute l0, l1 per propensity scores
         # Note: for stability should maybe exclude samples w/ prob < 1/reps
         # Is trained on entire dataset, but then subsetted in the test step
-        if fast_null:
-            raise ValueError('Fast Null not yet implemented')
+        if fast_pvalue:
+            from scipy.stats import norm
+            self.pvalue_ = 1 - norm.cdf(self.stat_snr_)
         else:
             self.e_hat_ = (
                 LogisticRegression(
