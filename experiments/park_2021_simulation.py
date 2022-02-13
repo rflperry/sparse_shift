@@ -41,9 +41,9 @@ def main(args):
         z = np.random.choice(2, (n))
         y = np.asarray([outcomes[i] for outcomes, i in zip(y_outcomes, z)])
         if args.test == 'kcd':
-            kcd = KCD(reg=1.0, n_jobs=10)
+            kcd = KCD(reg=1.0, n_jobs=-2)
         elif args.test == 'kcdcv':
-            kcd = KCDCV(regs=[1.0])#, n_jobs=10)
+            kcd = KCDCV(regs=[1e-2, 1e-1, 1, 10, 100], n_jobs=-2)
         else:
             raise ValueError(f'Test {args.test} not valid.')
 
@@ -59,8 +59,38 @@ def main(args):
         stats["Y1"].append(stat)
         pvalues["Y1"].append(pvalue)
 
+    # Pvalue distribution plots, should be close to uniform
+    fig, axes = plt.subplots(1, 3, figsize=(10, 3), sharey=True)
+    for i, (key, val) in enumerate(pvalues.items()):
+        ax = axes[i]
+        n = len(val)
+        entries, edges, _ = ax.hist(
+            val,
+            bins=np.arange(0, 1.1, 0.1),
+            weights=np.ones(n) / n,
+            color="b",
+        )
+        # entries = height of each column = proportion in that bin
+        # calculate bin centers
+        bin_centers = 0.5 * (edges[:-1] + edges[1:])
+        ax.axhline(y=sum(entries) / len(bin_centers), ls="--", c="#333333")
+        # errorbars are binomial proportion confidence intervals
+        ax.errorbar(
+            bin_centers,
+            entries,
+            yerr=1.96 * np.sqrt(entries * (1 - entries) / n),
+            fmt=".",
+            c="#333333",
+        )
+        ax.set_title(f"Test {key} pvalues")
+        # ax.set_xlim(0,1)
+        ax.set_xticks([0, 1])
+        ax.set_yticks([0, 0.1, 1])
+
+    plt.savefig(f'./figures/park_pval_dist_{args.test}.pdf')
+
     np.random.seed(100)
-    n = 1000
+    n = 100
     X, y_outcomes = sample_toy_data(n)
     z = np.random.choice(2, (n))
     y = np.asarray([outcomes[i] for outcomes, i in zip(y_outcomes, z)])
@@ -134,7 +164,7 @@ def main(args):
     fig.colorbar(cm, ax=ax)
     plt.tight_layout()
     plt.savefig(f'./figures/park_3plot_{args.test}.pdf')
-    plt.show()
+    return
 
 
 if __name__ == "__main__":

@@ -459,7 +459,7 @@ class KCDCV:
 
         return self
 
-    def test(self, X, Y, z, reps=1000, random_state=None):
+    def test(self, X, Y, z, reps=1000, random_state=None, fast_pvalue=False):
         r"""
         Calculates the *k*-sample test statistic and p-value using the optimal
         regularization value learned during the optimize step.
@@ -474,6 +474,9 @@ class KCDCV:
         reps : int, default: 1000
             The number of replications used to estimate the null distribution
             when using the permutation test used to calculate the p-value.
+        fast_pvalue : boolean, default=False
+            If True, the analytic form of the pvalue is computed using a
+            normal distribution approximation. Valid with larger sample sizes.
 
         Returns
         -------
@@ -485,33 +488,6 @@ class KCDCV:
         # if not hasattr(self, "reg_opt_"):
         self.optimize_params(X, Y, z, random_state=random_state)
 
-        # compute K0, K1 on all data. split so as to compute separate sigmas
-        K00, _ = _compute_kern(
-            X[np.array(1 - z, dtype=bool)],
-            n_jobs=self.n_jobs,
-            sigma=self.sigma_X_,
-        )
-        # K01, _ = _compute_kern(
-        #     X[np.array(1 - z, dtype=bool)],
-        #     X[np.array(z, dtype=bool)],
-        #     sigma=self.sigma_X_,
-        #     n_jobs=self.n_jobs,
-        # )
-        # K0 = np.hstack((K00, K01))
-
-        K11, _ = _compute_kern(
-            X[np.array(z, dtype=bool)],
-            n_jobs=self.n_jobs,
-            sigma=self.sigma_X_,
-        )
-        # K10, _ = _compute_kern(
-        #     X[np.array(z, dtype=bool)],
-        #     X[np.array(1 - z, dtype=bool)],
-        #     sigma=self.sigma_X_,
-        #     n_jobs=self.n_jobs,
-        # )
-        # K1 = np.hstack((K11, K10))
-
         K, _ = _compute_kern(
             X,
             sigma=self.sigma_X_,
@@ -520,12 +496,12 @@ class KCDCV:
 
         #  W0, W1 of optimal reg
         K0W0 = np.mean(
-            K[self.train_idx_][:, self.test_idx_][
+            K[self.train_idx_][
                 np.array(1 - z[self.train_idx_], dtype=bool)
                 ],
             axis=1).T @ self.W0_
         K1W1 = np.mean(
-            K[self.train_idx_][:, self.test_idx_][
+            K[self.train_idx_][
                 np.array(z[self.train_idx_], dtype=bool)
                 ],
             axis=1).T @ self.W1_
@@ -550,46 +526,49 @@ class KCDCV:
 
         self.stat_, pooled_var = self._statistic(
             K0W0, L0, K1W1, L1, idx) 
-        self.stat_ *= self.h_sign_  # ensures learned kernel expectation for Y1 > Y0
+        self.stat_ *= self.h_sign_ # ensures learned kernel expectation for Y1 > Y0
         self.stat_snr_ = self.stat_ / np.sqrt(pooled_var)
 
         # permutation test via permute l0, l1 per propensity scores
         # Note: for stability should maybe exclude samples w/ prob < 1/reps
         # Is trained on entire dataset, but then subsetted in the test step
-        self.e_hat_ = (
-            LogisticRegression(
-                n_jobs=self.n_jobs,
-                penalty="l2",
-                warm_start=True,
-                solver="lbfgs",
-                C=1 / (2 * self.reg_opt_),
-                random_state=random_state,
+        if fast_null:
+            raise ValueError('Fast Null not yet implemented')
+        else:
+            self.e_hat_ = (
+                LogisticRegression(
+                    n_jobs=self.n_jobs,
+                    penalty="l2",
+                    warm_start=True,
+                    solver="lbfgs",
+                    C=1 / (2 * self.reg_opt_),
+                    random_state=random_state,
+                )
+                .fit(K, z)
+                .predict_proba(K)[:, 1]
             )
-            .fit(K, z)
-            .predict_proba(K)[:, 1]
-        )
 
-        h_list = (K1W1 @ L1 - K0W0 @ L0) * self.h_sign_
-        # Parallelization, storage cost of kernel matrices
-        self.null_stats_, self.null_vars_ = np.array(
-            list(
-                zip(
-                    *Parallel(n_jobs=self.n_jobs)(
-                        [
-                            delayed(self._permute_statistic)(
-                                h_list,
-                                np.random.binomial(
-                                    1, self.e_hat_[self.test_idx_]),
-                            )
-                            for _ in range(reps)
-                        ]
+            h_list = (K1W1 @ L1 - K0W0 @ L0) * self.h_sign_
+            # Parallelization, storage cost of kernel matrices
+            self.null_stats_, self.null_vars_ = np.array(
+                list(
+                    zip(
+                        *Parallel(n_jobs=self.n_jobs)(
+                            [
+                                delayed(self._permute_statistic)(
+                                    h_list,
+                                    np.random.binomial(
+                                        1, self.e_hat_[self.test_idx_]),
+                                )
+                                for _ in range(reps)
+                            ]
+                        )
                     )
                 )
             )
-        )
-        self.pvalue_ = (
-            1 + np.sum(self.null_stats_ >= self.stat_)
-            ) / (1 + reps)
+            self.pvalue_ = (
+                1 + np.sum(self.null_stats_ >= self.stat_)
+                ) / (1 + reps)
 
         return self.stat_, self.pvalue_
 
