@@ -3,6 +3,7 @@
 # Author: Ronan Pery
 
 import numpy as np
+from scipy.stats import norm
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import pairwise_distances
 from sklearn.metrics.pairwise import pairwise_kernels
@@ -239,14 +240,18 @@ class KCD:
 
         Parameters
         ----------
-        *args : ndarray
-            Variable length input data matrices. All inputs must have the same
-            number of dimensions. That is, the shapes must be `(n, p)` and
-            `(m, p)`, ... where `n`, `m`, ... are the number of samples and `p` is
-            the number of dimensions.
+        X : ndarray, shape (n, p)
+            Features to condition on
+        Y : ndarray, shape (n, q)
+            Target or outcome features
+        z : list or ndarray, length n
+            List of zeros and ones indicating which samples belong to
+            which groups.
         reps : int, default: 1000
             The number of replications used to estimate the null distribution
             when using the permutation test used to calculate the p-value.
+        random_state : int, RandomState instance or None, default=None
+            Controls randomness in propensity score estimation.
         fast_pvalue : Ignored
             Ignored
 
@@ -274,6 +279,7 @@ class KCD:
                 penalty="l2",
                 warm_start=True,
                 solver="lbfgs",
+                random_state=random_state,
                 C=1 / (2 * self.reg),
             )
             .fit(K, z)
@@ -297,7 +303,7 @@ class KCD:
 class KCDCV:
     """
     Kernel Conditional Discrepancy test with cross validation for hyperparamter
-    selection based on test statistics SNR.
+    selection.
 
     Parameters
     ----------
@@ -329,7 +335,7 @@ class KCDCV:
             ``"laplacian"``, ``"sigmoid"``, ``"cosine"``]
 
         Note ``"rbf"`` and ``"gaussian"`` are the same metric.
-    regs : list, shape (n_regs,), default=(0.1, 1.0, 10)
+    regs : list, shape (n_regs,), default=(0.01, 0.1, 1.0, 10, 100)
         List of kernel regularization values to try. Larger values correspond
         to larger regularization.
     n_jobs : int, optional
@@ -339,60 +345,87 @@ class KCDCV:
 
     Attributes
     ----------
-    sigma_X0_ : float
-        median l2 distance between conditional features X0
-    sigma_X1_ : float
-        median l2 distance between conditional features X1
+    sigma_X_ : float
+        median l2 distance between training features X
     sigma_Y_ : float
-        median l2 distance between target features Y
-    snrs_ : 
-    reg_opt_ :
-    stat_ : 
-    stat_snr_ :
-    null_stats_ : list
-        Null distribution of test statistics after calling test.
-    null_vars_ :
+        median l2 distance between all training targets Y
+    train_idx_ : numpy.ndarray
+        Indices of training subset
+    test_idx_ : numpy.ndarray
+        Indices of test subset
+    reg_snrs_ : list
+        Training test statistic SNRs for each regularization value
+    reg_opt_ : float
+        Regularization value with maximum SNR on the training data
+    stat_ : float
+        Test data test statistic
+    stat_snr_ : float
+        Test data SNR
+    power_alphas_ : numpy.ndarray
+        False positive rate values for power calculation
+    analytic_powers_ : numpy.ndarray
+        Analytic true positive (power) for varying alpha levels
+    analytic_pvalue_ : float
+        Analytic pvalue based on a normal distribution approximation
     e_hat_ : list
-        Propensity score probabilities of samples being in group 1.
+        Propensity score probabilities, P(Z=1 | X)
+    null_stats_ : list
+        Null distribution of test statistics on permuted test Y
+    null_vars_ : numpy.ndarray
+        Estimated variance of null distribution test statistics
+    perm_pvalue : float
+        Pvalue of the test data statistic based on a permutation test
 
     References
     ----------
-    [1] J. Park, U. Shalit, B. Schölkopf, and K. Muandet, “Conditional Distributional
-        Treatment Effect with Kernel Conditional Mean Embeddings and U-Statistic
-        Regression,” arXiv:2102.08208, Jun. 2021.
+    [1] J. Park, U. Shalit, B. Schölkopf, and K. Muandet, “Conditional
+        Distributional Treatment Effect with Kernel Conditional Mean
+        Embeddings and U-Statistic Regression,” arXiv:2102.08208, Jun. 2021.
+    
+    [2] J. M. Kübler, W. Jitkrittum, B. Schölkopf, and K. Muandet, “A Witness
+        Two-Sample Test,” arXiv:2102.05573, Feb. 2022.
     """
 
     def __init__(
-        self, compute_distance=None, regs=(0.1, 1.0, 10), n_jobs=None, **kwargs
+        self,
+        compute_distance=None,
+        regs=(0.01, 0.1, 1.0, 10, 100),
+        n_jobs=None,
+        **kwargs
     ):
         self.compute_distance = compute_distance
         self.regs = regs
         self.kwargs = kwargs
         self.n_jobs = n_jobs
 
-    def optimize_params(
-        self, X, Y, z, test_fraction=None, random_state=None
-    ):
+    def _optimize_params(self, X, Y, z, test_fraction=None, random_state=None):
+        """
+        Optimizes the regularization amount for the kernel matrix inversion
+        as detailed in [2]. Splits the data based on labels z and computes
+        the witness function using the training data. The optimal amount of
+        regularization is that which maximizes the signal to noise ratio of
+        the difference between the two distributions.
+        """
         X = check_2d(X)
         Y = check_2d(Y)
         self.n_samples_, self.n_features_ = X.shape
 
         # Split data into train/test
-        self.train_idx_, self.test_idx_ = next(StratifiedShuffleSplit(
-            n_splits=1,
-            test_size=0.5 if test_fraction is None else test_fraction,
-            random_state=random_state,
-        ).split(np.zeros(self.n_samples_), z))
-
-        # compute K0, K1 on all data. split so as to compute separate sigmas
-        _, self.sigma_X_ = _compute_kern(
-            X[self.train_idx_], n_jobs=self.n_jobs
+        self.train_idx_, self.test_idx_ = next(
+            StratifiedShuffleSplit(
+                n_splits=1,
+                test_size=0.5 if test_fraction is None else test_fraction,
+                random_state=random_state,
+            ).split(np.zeros(self.n_samples_), z)
         )
 
-        K00, self.sigma_X0_ = _compute_kern(
+        # compute K0, K1 on all data. split so as to compute separate sigmas
+        _, self.sigma_X_ = _compute_kern(X[self.train_idx_], n_jobs=self.n_jobs)
+
+        K00, _ = _compute_kern(
             X[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
             n_jobs=self.n_jobs,
-            sigma=self.sigma_X_
+            sigma=self.sigma_X_,
         )
         K01, _ = _compute_kern(
             X[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)],
@@ -402,7 +435,7 @@ class KCDCV:
         )
         K0 = np.hstack((K00, K01))
 
-        K11, self.sigma_X1_ = _compute_kern(
+        K11, _ = _compute_kern(
             X[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)],
             n_jobs=self.n_jobs,
             sigma=self.sigma_X_,
@@ -435,13 +468,10 @@ class KCDCV:
         )
 
         # indices of groups 0 and 1 in L0, L1
-        # idx = np.asarray([0] * L10_train.shape[1] + [1] * L11_train.shape[1])
         idx = z[self.train_idx_]
 
         # Iterate over reg
-        # - compute W0, W1
-        # - compute mean, var of witness function
-        self.snrs_ = []
+        self.reg_snrs_ = []
         for reg in self.regs:  # could consider separate reg parameters
             W0 = np.linalg.inv(K00 + reg * np.identity(K00.shape[0]))
             K0W0 = np.mean(K0, axis=1).T @ W0
@@ -450,32 +480,36 @@ class KCDCV:
 
             stat, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx)
 
-            self.snrs_.append(stat / np.sqrt(pooled_var))
+            self.reg_snrs_.append(stat / np.sqrt(pooled_var))
 
         # identify optimal reg
-        self.reg_opt_ = self.regs[np.argmax(np.abs(self.snrs_))]
-        self.h_sign_ = np.sign(self.snrs_[np.argmax(np.abs(self.snrs_))])
+        self.reg_opt_ = self.regs[np.argmax(np.abs(self.reg_snrs_))]
+        h_sign = np.sign(self.reg_snrs_[np.argmax(np.abs(self.reg_snrs_))])
 
-        self.W0_ = np.linalg.inv(K00 + self.reg_opt_ * np.identity(K00.shape[0]))
-        self.W1_ = np.linalg.inv(K11 + self.reg_opt_ * np.identity(K11.shape[0]))
+        W0 = np.linalg.inv(K00 + self.reg_opt_ * np.identity(K00.shape[0]))
+        W1 = np.linalg.inv(K11 + self.reg_opt_ * np.identity(K11.shape[0]))
 
-        return self
+        return W0, W1, h_sign
 
     def test(self, X, Y, z, reps=1000, random_state=None, fast_pvalue=False):
         r"""
         Calculates the *k*-sample test statistic and p-value using the optimal
-        regularization value learned during the optimize step.
+        regularization value which maximizes the test statistic SNR.
 
         Parameters
         ----------
-        *args : ndarray
-            Variable length input data matrices. All inputs must have the same
-            number of dimensions. That is, the shapes must be `(n, p)` and
-            `(m, p)`, ... where `n`, `m`, ... are the number of samples and `p` is
-            the number of dimensions.
+        X : ndarray, shape (n, p)
+            Features to condition on
+        Y : ndarray, shape (n, q)
+            Target or outcome features
+        z : list or ndarray, length n
+            List of zeros and ones indicating which samples belong to
+            which groups.
         reps : int, default: 1000
             The number of replications used to estimate the null distribution
             when using the permutation test used to calculate the p-value.
+        random_state : int, RandomState instance or None, default=None
+            Controls the randomness of the data splitting.
         fast_pvalue : boolean, default=False
             If True, the analytic form of the pvalue is computed using a
             normal distribution approximation. Valid with larger sample sizes.
@@ -483,31 +517,26 @@ class KCDCV:
         Returns
         -------
         stat : float
-            The computed *k*-sample statistic.
+            The computed test statistic.
         pvalue : float
-            The computed *k*-sample p-value.
+            The computed test p-value.
         """
-        # if not hasattr(self, "reg_opt_"):
-        self.optimize_params(X, Y, z, random_state=random_state)
+        W0, W1, h_sign = self._optimize_params(X, Y, z, random_state=random_state)
 
-        K, _ = _compute_kern(
-            X,
-            sigma=self.sigma_X_,
-            n_jobs=self.n_jobs,
+        K, _ = _compute_kern(X, sigma=self.sigma_X_, n_jobs=self.n_jobs,)
+
+        K0W0 = (
+            np.mean(
+                K[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)], axis=1
+            ).T
+            @ W0
         )
-
-        #  W0, W1 of optimal reg
-        K0W0 = np.mean(
-            K[self.train_idx_][
-                np.array(1 - z[self.train_idx_], dtype=bool)
-                ],
-            axis=1).T @ self.W0_
-        K1W1 = np.mean(
-            K[self.train_idx_][
-                np.array(z[self.train_idx_], dtype=bool)
-                ],
-            axis=1).T @ self.W1_
-        # K1W1 = np.mean(K[np.array(z, dtype=bool)], axis=1).T @ self.W1_
+        K1W1 = (
+            np.mean(
+                K[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)], axis=1
+            ).T
+            @ W1
+        )
 
         # compute l0, l1 from test to train
         L0, _ = _compute_kern(  # shape (tr0, te)
@@ -525,18 +554,28 @@ class KCDCV:
 
         # binary indices for test stat
         idx = z[self.test_idx_]
+        n0 = np.array(1 - z[self.test_idx_], dtype=bool).sum()
+        n1 = np.array(z[self.test_idx_], dtype=bool).sum()
 
-        self.stat_, pooled_var = self._statistic(
-            K0W0, L0, K1W1, L1, idx) 
-        self.stat_ *= self.h_sign_ # ensures learned kernel expectation for Y1 > Y0
+        self.stat_, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx)
+        self.stat_ *= h_sign  # ensures learned kernel expectation for Y1 > Y0
         self.stat_snr_ = self.stat_ / np.sqrt(pooled_var)
+
+        # Compute analytic power, per [2]
+        self.power_alphas_ = np.linspace(0.05, 1, 21)
+        self.analytic_powers_ = 1 - np.asarray(
+            [
+                norm.cdf(norm.ppf(1 - alpha) - self.stat_snr_ * np.sqrt(n0 + n1))
+                for alpha in self.power_alphas_
+            ]
+        )
 
         # permutation test via permute l0, l1 per propensity scores
         # Note: for stability should maybe exclude samples w/ prob < 1/reps
         # Is trained on entire dataset, but then subsetted in the test step
-        if fast_pvalue:
-            from scipy.stats import norm
-            self.pvalue_ = 1 - norm.cdf(self.stat_snr_)
+        if fast_pvalue:  # per [2]
+            self.analytic_pvalue_ = 1 - norm.cdf(self.stat_snr_ * np.sqrt(n0 + n1))
+            return self.stat_, self.analytic_pvalue_
         else:
             self.e_hat_ = (
                 LogisticRegression(
@@ -551,7 +590,7 @@ class KCDCV:
                 .predict_proba(K)[:, 1]
             )
 
-            h_list = (K1W1 @ L1 - K0W0 @ L0) * self.h_sign_
+            h_list = (K1W1 @ L1 - K0W0 @ L0) * h_sign
             # Parallelization, storage cost of kernel matrices
             self.null_stats_, self.null_vars_ = np.array(
                 list(
@@ -560,8 +599,7 @@ class KCDCV:
                             [
                                 delayed(self._permute_statistic)(
                                     h_list,
-                                    np.random.binomial(
-                                        1, self.e_hat_[self.test_idx_]),
+                                    np.random.binomial(1, self.e_hat_[self.test_idx_]),
                                 )
                                 for _ in range(reps)
                             ]
@@ -569,11 +607,11 @@ class KCDCV:
                     )
                 )
             )
-            self.pvalue_ = (
-                1 + np.sum(self.null_stats_ >= self.stat_)
-                ) / (1 + reps)
+            self.perm_pvalue_ = (1 + np.sum(self.null_stats_ >= self.stat_)) / (
+                1 + reps
+            )
 
-        return self.stat_, self.pvalue_
+            return self.stat_, self.perm_pvalue_
 
     def _permute_statistic(self, h_list, idx):
         h0_list = h_list[np.array(1 - idx, dtype=bool)]

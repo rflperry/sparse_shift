@@ -47,15 +47,15 @@ def main(args):
         else:
             raise ValueError(f'Test {args.test} not valid.')
 
-        stat, pvalue = kcd.test(X, y, z, reps=n_reps)
+        stat, pvalue = kcd.test(X, y, z, reps=n_reps, fast_pvalue=args.fast_pvalue)
         stats["Y01"].append(stat)
         pvalues["Y01"].append(pvalue)
 
-        stat, pvalue = kcd.test(X, y_outcomes[:, 0], z, reps=n_reps)
+        stat, pvalue = kcd.test(X, y_outcomes[:, 0], z, reps=n_reps, fast_pvalue=args.fast_pvalue)
         stats["Y0"].append(stat)
         pvalues["Y0"].append(pvalue)
 
-        stat, pvalue = kcd.test(X, y_outcomes[:, 1], z, reps=n_reps)
+        stat, pvalue = kcd.test(X, y_outcomes[:, 1], z, reps=n_reps, fast_pvalue=args.fast_pvalue)
         stats["Y1"].append(stat)
         pvalues["Y1"].append(pvalue)
 
@@ -176,6 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--reps", type=int, default=1000)
     parser.add_argument("--power_reps", type=int, default=100)
     parser.add_argument("--n_samples", type=int, default=100)
+    parser.add_argument("--fast_pvalue", action="store_true", default=False)
 
     args = parser.parse_args()
 
