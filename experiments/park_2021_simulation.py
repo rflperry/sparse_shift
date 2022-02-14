@@ -163,7 +163,10 @@ def main(args):
     cm = ax.pcolormesh(X_lin, Y_lin, witness_mat, cmap="magma")
     fig.colorbar(cm, ax=ax)
     plt.tight_layout()
-    plt.savefig(f'./figures/park_3plot_{args.test}.pdf')
+    if args.fast_pvalue:
+        plt.savefig(f'./figures/park_3plot_{args.test}_analytic.pdf')
+    else:
+        plt.savefig(f'./figures/park_3plot_{args.test}.pdf')
     return
 
 

@@ -381,7 +381,6 @@ class KCDCV:
     [1] J. Park, U. Shalit, B. Schölkopf, and K. Muandet, “Conditional
         Distributional Treatment Effect with Kernel Conditional Mean
         Embeddings and U-Statistic Regression,” arXiv:2102.08208, Jun. 2021.
-    
     [2] J. M. Kübler, W. Jitkrittum, B. Schölkopf, and K. Muandet, “A Witness
         Two-Sample Test,” arXiv:2102.05573, Feb. 2022.
     """
