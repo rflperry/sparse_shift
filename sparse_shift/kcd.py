@@ -417,6 +417,8 @@ class KCDCV:
                 random_state=random_state,
             ).split(np.zeros(self.n_samples_), z)
         )
+        self.train_idx_ = np.sort(self.train_idx_)
+        self.test_idx_ = np.sort(self.test_idx_)
 
         # compute K0, K1 on all data. split so as to compute separate sigmas
         _, self.sigma_X_ = _compute_kern(X[self.train_idx_], n_jobs=self.n_jobs)
@@ -473,9 +475,9 @@ class KCDCV:
         self.reg_snrs_ = []
         for reg in self.regs:  # could consider separate reg parameters
             W0 = np.linalg.inv(K00 + reg * np.identity(K00.shape[0]))
-            K0W0 = np.mean(K0, axis=1).T @ W0
+            K0W0 = K0.T @ W0
             W1 = np.linalg.inv(K11 + reg * np.identity(K11.shape[0]))
-            K1W1 = np.mean(K1, axis=1).T @ W1
+            K1W1 = K1.T @ W1
 
             stat, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx)
 
@@ -525,15 +527,15 @@ class KCDCV:
         K, _ = _compute_kern(X, sigma=self.sigma_X_, n_jobs=self.n_jobs,)
 
         K0W0 = (
-            np.mean(
-                K[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)], axis=1
-            ).T
+            K[self.train_idx_][np.array(1 - z[self.train_idx_], dtype=bool)][
+                :, self.test_idx_
+            ].T
             @ W0
         )
         K1W1 = (
-            np.mean(
-                K[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)], axis=1
-            ).T
+            K[self.train_idx_][np.array(z[self.train_idx_], dtype=bool)][
+                :, self.test_idx_
+            ].T
             @ W1
         )
 
@@ -556,8 +558,8 @@ class KCDCV:
         n0 = np.array(1 - z[self.test_idx_], dtype=bool).sum()
         n1 = np.array(z[self.test_idx_], dtype=bool).sum()
 
-        self.stat_, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx)
-        self.stat_ *= h_sign  # ensures learned kernel expectation for Y1 > Y0
+        # h_sign ensures learned kernel expectation for Y1 > Y0
+        self.stat_, pooled_var = self._statistic(K0W0, L0, K1W1, L1, idx, sign=h_sign)
         self.stat_snr_ = self.stat_ / np.sqrt(pooled_var)
 
         # Compute analytic power, per [2]
@@ -589,7 +591,12 @@ class KCDCV:
                 .predict_proba(K)[:, 1]
             )
 
-            h_list = (K1W1 @ L1 - K0W0 @ L0) * h_sign
+            M00 = K0W0.T @ K0W0
+            M01 = K0W0.T @ K1W1
+            M11 = K1W1.T @ K1W1
+
+            h0_list = M00 @ L0 - M01 @ L1
+            h1_list = M01.T @ L0 - M11 @ L1
             # Parallelization, storage cost of kernel matrices
             self.null_stats_, self.null_vars_ = np.array(
                 list(
@@ -597,8 +604,11 @@ class KCDCV:
                         *Parallel(n_jobs=self.n_jobs)(
                             [
                                 delayed(self._permute_statistic)(
-                                    h_list,
+                                    h0_list,
+                                    h1_list,
+                                    # K0W0, L0, K1W1, L1,
                                     np.random.binomial(1, self.e_hat_[self.test_idx_]),
+                                    sign=h_sign,
                                 )
                                 for _ in range(reps)
                             ]
@@ -612,24 +622,28 @@ class KCDCV:
 
             return self.stat_, self.perm_pvalue_
 
-    def _permute_statistic(self, h_list, idx):
-        h0_list = h_list[np.array(1 - idx, dtype=bool)]
-        h1_list = h_list[np.array(idx, dtype=bool)]
+    def _permute_statistic(self, h0_list, h1_list, idx, sign=1):
+        h0_list = h0_list[:, np.array(1 - idx, dtype=bool)]
+        h1_list = h1_list[:, np.array(idx, dtype=bool)]
 
         c = len(h0_list) / (len(h0_list) + len(h1_list))
         pooled_var = np.var(h0_list) / c + np.var(h1_list) / (1 - c)
-        stat = np.mean(h1_list) - np.mean(h0_list)
+        stat = (np.mean(h1_list) - np.mean(h0_list)) * sign
         return stat, pooled_var
 
-    def _statistic(self, K0W0, L0, K1W1, L1, idx):
+    def _statistic(self, K0W0, L0, K1W1, L1, idx, sign=1):
         # test statistic and variance
         idx0 = np.array(1 - idx, dtype=bool)
         idx1 = np.array(idx, dtype=bool)
 
-        h0_list = K0W0 @ L0[:, idx0] - K1W1 @ L1[:, idx0]
-        h1_list = K0W0 @ L0[:, idx1] - K1W1 @ L1[:, idx1]
+        M00 = K0W0.T @ K0W0
+        M01 = K0W0.T @ K1W1
+        M11 = K1W1.T @ K1W1
+
+        h0_list = M00 @ L0[:, idx0] - M01 @ L1[:, idx0]
+        h1_list = M01.T @ L0[:, idx1] - M11 @ L1[:, idx1]
 
         c = len(h0_list) / (len(h0_list) + len(h1_list))
         pooled_var = np.var(h0_list) / c + np.var(h1_list) / (1 - c)
-        stat = np.mean(h1_list) - np.mean(h0_list)
+        stat = (np.mean(h1_list) - np.mean(h0_list)) * sign
         return stat, pooled_var
