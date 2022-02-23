@@ -4,6 +4,7 @@
 
 import numpy as np
 from scipy.stats import norm
+from scipy.optimize import minimize_scalar
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import pairwise_distances
 from sklearn.metrics.pairwise import pairwise_kernels
@@ -31,6 +32,17 @@ def _compute_kern(X, Y=None, metric="rbf", n_jobs=None, sigma=None):
         med = sigma
     gamma = 1.0 / (2 * (med ** 2))
     return pairwise_kernels(X, Y=Y, metric=metric, n_jobs=n_jobs, gamma=gamma), med
+
+
+def _compute_reg_bound(K):
+    n = K.shape[0]
+    evals = np.linalg.svd(K, compute_uv=False, hermitian=True)
+    res = minimize_scalar(
+        lambda reg: np.sum(evals ** 2 / (evals + reg) ** 2) / n + reg,
+        bounds=(0.0001, 1000),
+        method="bounded",
+    )
+    return res.x
 
 
 class KCD:
@@ -67,8 +79,11 @@ class KCD:
             ``"laplacian"``, ``"sigmoid"``, ``"cosine"``]
 
         Note ``"rbf"`` and ``"gaussian"`` are the same metric.
-    reg : float, nonnegative
-        Amount of regularization for inverting the kernel matrix.
+    regs : (float, float), default=None
+        Amount of regularization for inverting the kernel matrices
+        of the two classes.
+        If None, chooses the value that minimizes the upper bound
+        on the mean squared prediction error.
     n_jobs : int, optional
         Number of jobs to run computations in parallel.
     **kwargs
@@ -79,7 +94,11 @@ class KCD:
     sigma_x_ : float
         median l2 distance between conditional features X
     sigma_y_ : float
-        median l2 distance between target features Y 
+        median l2 distance between target features Y
+    regs_ : (float, float)
+        Regularization used to invert kernel matrices in X
+    propensity_reg_ : float
+        Regularization parameter computed for propensity scores
     null_dist_ : list
         Null distribution of test statistics after calling test.
     e_hat_ : list
@@ -97,9 +116,9 @@ class KCD:
         Regression,” arXiv:2102.08208, Jun. 2021.
     """
 
-    def __init__(self, compute_distance=None, reg=1.0, n_jobs=None, **kwargs):
+    def __init__(self, compute_distance=None, regs=None, n_jobs=None, **kwargs):
         self.compute_distance = compute_distance
-        self.reg = reg
+        self.regs = regs
         self.kwargs = kwargs
         self.n_jobs = n_jobs
 
@@ -135,8 +154,13 @@ class KCD:
         K0 = K[np.array(1 - z, dtype=bool)][:, np.array(1 - z, dtype=bool)]
         K1 = K[np.array(z, dtype=bool)][:, np.array(z, dtype=bool)]
 
-        W0 = np.linalg.inv(K0 + self.reg * np.identity(int(np.sum(1 - z))))
-        W1 = np.linalg.inv(K1 + self.reg * np.identity(int(np.sum(z))))
+        if not hasattr(self, "regs_"):
+            self.regs_ = self.regs
+        if self.regs_ is None:
+            self.regs_ = (_compute_reg_bound(K0), _compute_reg_bound(K1))
+
+        W0 = np.linalg.inv(K0 + self.regs_[0] * np.identity(int(np.sum(1 - z))))
+        W1 = np.linalg.inv(K1 + self.regs_[1] * np.identity(int(np.sum(z))))
 
         return W0, W1
 
@@ -272,6 +296,7 @@ class KCD:
         stat = self._statistic(K, L, z)
 
         # Compute proensity scores
+        self.propensity_reg_ = _compute_reg_bound(K)
         # Note: for stability should maybe exclude samples w/ prob < 1/reps
         self.e_hat_ = (
             LogisticRegression(
@@ -280,7 +305,7 @@ class KCD:
                 warm_start=True,
                 solver="lbfgs",
                 random_state=random_state,
-                C=1 / (2 * self.reg),
+                C=1 / (2 * self.propensity_reg_),
             )
             .fit(K, z)
             .predict_proba(K)[:, 1]
@@ -419,6 +444,9 @@ class KCDCV:
         )
         self.train_idx_ = np.sort(self.train_idx_)
         self.test_idx_ = np.sort(self.test_idx_)
+
+        self.train_idx_ = np.arange(self.n_samples_)
+        self.test_idx_ = np.arange(self.test_idx_)
 
         # compute K0, K1 on all data. split so as to compute separate sigmas
         _, self.sigma_X_ = _compute_kern(X[self.train_idx_], n_jobs=self.n_jobs)
