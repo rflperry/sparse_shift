@@ -82,33 +82,25 @@ def nonlinear_icp_sim(
         f_join = np.prod
 
     equations = [
-        partial(
-            _icp_base_func,
-            parents=parents,
-            function=function,
-            f_join=f_join,
-        ) for parents in dag
+        partial(_icp_base_func, parents=parents, function=function, f_join=f_join,)
+        for parents in dag
     ]
 
     if intervention_pct > 0:
         n_intervene = np.ceil(len(dag) * intervention_pct)
         intervene_idx = np.random.choice(len(dag), n_intervene, replace=False)
         for i in intervene_idx:
-            if intervention == 'soft':
+            if intervention == "soft":
                 pass
-                # equations[i] = lambda X, U: 
-            elif intervention == 'hard':
+                # equations[i] = lambda X, U:
+            elif intervention == "hard":
                 pass
             else:
-                raise ValueError(f"Intervention value {intervention} \
-                    not accepted")
+                raise ValueError(
+                    f"Intervention value {intervention} \
+                    not accepted"
+                )
 
-
-    X = sample_topological(
-        n_samples,
-        equations,
-        noise,
-        random_state,
-    )
+    X = sample_topological(n_samples, equations, noise, random_state,)
 
     return X
