@@ -15,6 +15,7 @@ def plot_dag(
     title=None,
     highlight_nodes=None,
     highlight_edges=None,
+    labels=None,
 ):
     if parent_edges:
         adj = adj.T
@@ -38,7 +39,10 @@ def plot_dag(
 
     labeldict = {}
     for i in range(adj.shape[0]):
-        labeldict[i] = f"X{i+1}"
+        if labels is None:
+            labeldict[i] = f"X{i+1}"
+        else:
+            labeldict[i] = labels[i]
 
     if highlight_edges is not None:
         if parent_edges:
