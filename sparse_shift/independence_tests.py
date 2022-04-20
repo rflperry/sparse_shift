@@ -59,7 +59,7 @@ def invariant_residual_test(
             ]
         )
         param_grid = {
-            "spline__n_knots": [1, 3, 5, 7, 9],
+            "spline__n_knots": [3, 5, 7, 9],
         }
         predictor = GridSearchCV(
             pipe, param_grid, n_jobs=-2, refit=True,

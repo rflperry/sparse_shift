@@ -1,3 +1,4 @@
 numpy
 scitkit-learn
 networkx
+causal-learn

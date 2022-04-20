@@ -12,13 +12,18 @@ import os
 warnings.simplefilter("ignore")
 os.environ["PYTHONWARNINGS"] = "ignore"  # Also affect subprocesses
 
-TEST_DICT = {
-    'test': ['invariant_residuals'],
-    'test_kwargs': [
-        {'method': 'gam', 'test': 'ks'},
-        {'method': 'linear', 'test': 'ks'}
-    ]
-}
+TEST_GRID = [
+    # {
+    #     'test': 'invariant_residuals',
+    #     'test_kwargs': {'method': 'gam', 'test': 'ks'}
+    # },
+    # {
+    #     'test': 'invariant_residuals',
+    #     'test_kwargs': {'method': 'linear', 'test': 'ks'}
+    # },
+    {'test': 'kci', 'test_kwargs': {}},
+    {'test': 'fisherz', 'test_kwargs': {}}
+]
 
 PARAMS_DICT = {
     'nonlinearity': ['id', 'sqrt', 'sin'],
@@ -59,15 +64,12 @@ alpha = 0.05 / n_features
 param_keys, param_values = zip(*PARAMS_DICT.items())
 params_grid = [dict(zip(param_keys, v)) for v in itertools.product(*param_values)]
 
-test_keys, test_values = zip(*TEST_DICT.items())
-test_grid = [dict(zip(test_keys, v)) for v in itertools.product(*test_values)]
-
 dag_keys, dags = zip(*dag_dict.items())
 
 # Create results csv header
 f_name = './bivariate_icp_pvalues.csv'
 header = np.hstack([
-    ['params_index'], list(test_keys), list(param_keys), ['n_samples', 'rep', 'dag'],
+    ['params_index'], list(TEST_GRID[0].keys()), list(param_keys), ['n_samples', 'rep', 'dag'],
     [f'X{i+1}' for i in range(n_features)]
 ])
 f = open(f_name, 'w+')
@@ -79,7 +81,7 @@ for i, params in tqdm(enumerate(params_grid)):
     if params['intervention_scale'] == 0 and params['intervention_shift'] == 0:
         continue
     intervention_targets = params.pop('intervention_targets')
-    for test_params in test_grid:
+    for test_params in TEST_GRID:
         for n_samples in N_SAMPLES:
             for rep in range(N_REPS):
                 Xs = [

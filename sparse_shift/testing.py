@@ -7,6 +7,7 @@ from hyppo.ksample import MMD
 from sparse_shift import KCD
 from sparse_shift.independence_tests import invariant_residual_test
 from sparse_shift.utils import dags2mechanisms
+from causallearn.utils.cit import fisherz, kci
 
 
 def test_dag_shifts(Xs, dags, test='invariant_residuals', test_kwargs={}):
@@ -19,7 +20,7 @@ def test_dag_shifts(Xs, dags, test='invariant_residuals', test_kwargs={}):
         List of observations from each environment
     parent_graph : np.ndarray, shape (m, m)
         Adjacency matrix indicating parents of each variable
-    test : {'invariant_residuals', 'kcd'}, default='invariant_residuals'
+    test : {'invariant_residuals', 'kcd', 'kci', 'fisherz'}, default='invariant_residuals'
         Test for equality of distribution
     test_kwargs : dict, optional
         Dictionary of named arguments for the independence test
@@ -85,7 +86,7 @@ def test_mechanism_shifts(Xs, parent_graph, test='invariant_residuals', test_kwa
     return num_shifts, pvalues
 
 
-def test_mechanism(Xs, m, parents, test, test_kwargs):
+def test_mechanism(Xs, m, parents, test='invariant_residuals', test_kwargs={}):
     """Tests a mechanism"""
 
     E = len(Xs)
@@ -113,6 +114,22 @@ def test_mechanism(Xs, m, parents, test, test_kwargs):
                         np.asarray([0] * Xs[e1].shape[0] + [1] * Xs[e2].shape[0]),
                         **test_kwargs
                     )
+                elif test == 'fisherz':
+                    # Test X \indep E | PA_X
+                    data = np.block([
+                        [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
+                        [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
+                    ])
+                    condition_set = tuple(np.where(parents > 0)[0] + 1)
+                    pvalue = fisherz(data, 0, m+1, condition_set)
+                elif test == 'kci':
+                    # Test X \indep E | PA_X
+                    data = np.block([
+                        [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
+                        [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
+                    ])
+                    condition_set = tuple(np.where(parents > 0)[0] + 1)
+                    pvalue = kci(data, 0, m+1, condition_set)
             pvalues[e1, e2] = pvalue
             pvalues[e2, e1] = pvalue
 
