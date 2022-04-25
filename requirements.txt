@@ -1,4 +1,8 @@
 numpy
-scitkit-learn
+scikit-learn
+matplotlib
+seaborn
 networkx
+# hyppo
 causal-learn
+causaldag
