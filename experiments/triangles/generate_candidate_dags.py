@@ -14,9 +14,9 @@ def get_triangle_dags():
                 # add edges
                 dag = np.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
                 for i, e in enumerate([e1, e2, e3]):
-                    if e == 1:  # X -> Y
+                    if e == -1:  # X -> Y
                         dag[i, (i + 1) % 3] = 1
-                    elif e == -1:  # X <- Y
+                    elif e == 1:  # X <- Y
                         dag[(i + 1) % 3, i] = 1
                 dags.append(dag)
     return dags
