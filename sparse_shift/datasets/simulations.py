@@ -256,9 +256,9 @@ def sample_cdnod_sim(
     Parameters
     ----------
     dag : numpy.ndarray, shape (m, m)
-        Weight matrix of parental relations in directed acyclic graph.
-        dag[i, j] != 0 if there is an edge from Xj -> Xi. The edge weight
-        dag[i, j] will weight Xj in the computation of Xi,
+        Weighted adjacency matrix.
+        dag[i, j] != 0 if there is an edge from Xi -> Xj. The edge weight
+        dag[i, j] will weight Xi in the computation of Xj,
 
     n_samples : int
         Number of training samples
@@ -316,9 +316,9 @@ def sample_cdnod_sim(
             parents=parents,
             coefs=base_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=base_seed.choice(functions, size=(np.sum(parents))),
-            noise_scale=1,
+            noise_scale=base_seed.uniform(1, 3),
         )
-        for i, parents in enumerate(dag)
+        for i, parents in enumerate(dag.T)
     ]
 
     domain_equations = [
@@ -329,7 +329,7 @@ def sample_cdnod_sim(
             functions=domain_seed.choice(functions, size=(np.sum(parents))),
             noise_scale=domain_seed.uniform(1, 3),
         )
-        for i, parents in enumerate(dag)
+        for i, parents in enumerate(dag.T)
     ]
 
     base_noises = [base_seed.choice(

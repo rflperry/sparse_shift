@@ -10,7 +10,7 @@ from sparse_shift.utils import dags2mechanisms
 from causallearn.utils.cit import fisherz, kci
 
 
-def test_dag_shifts(Xs, dags, test='invariant_residuals', test_kwargs={}):
+def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}):
     """
     Tests pairwise mechanism equality across a set of dags
 
@@ -18,16 +18,16 @@ def test_dag_shifts(Xs, dags, test='invariant_residuals', test_kwargs={}):
     ----------
     Xs : list of np.ndarray, shape (E, n_e, m)
         List of observations from each environment
-    parent_graph : np.ndarray, shape (m, m)
-        Adjacency matrix indicating parents of each variable
-    test : {'invariant_residuals', 'kcd', 'kci', 'fisherz'}, default='invariant_residuals'
+    dags : np.ndarray, shape (d, m, m)
+        List of adjacency matrices
+    test : {'invariant_residuals', 'kcd', 'kci', 'fisherz'}, default='kci'
         Test for equality of distribution
     test_kwargs : dict, optional
         Dictionary of named arguments for the independence test
 
     Returns
     -------
-    np.ndarray, shape (e, e, m)
+    np.ndarray, shape (d, m, e, e)
         pvalues for each pairwise test
     """
     E = len(Xs)
@@ -44,13 +44,13 @@ def test_dag_shifts(Xs, dags, test='invariant_residuals', test_kwargs={}):
 
     dag_pvalues = np.zeros((len(dags), M, E, E))
     for i, dag in enumerate(dags):
-        for m, parents in enumerate(dag):
+        for m, parents in enumerate(dag.T):  # transpose to get parents
             dag_pvalues[i, m] = pvalues_dict[m][tuple(parents)]
 
     return dag_pvalues
 
 
-def test_mechanism_shifts(Xs, parent_graph, test='invariant_residuals', test_kwargs={}, alpha=0.05):
+def test_mechanism_shifts(Xs, dag, test='kci', test_kwargs={}, alpha=0.05):
     """
     Tests pairwise mechanism equality
 
@@ -58,9 +58,9 @@ def test_mechanism_shifts(Xs, parent_graph, test='invariant_residuals', test_kwa
     ----------
     Xs : list of np.ndarray, shape (E, n_e, m)
         List of observations from each environment
-    parent_graph : np.ndarray, shape (m, m)
-        Adjacency matrix indicating parents of each variable
-    test : {'invariant_residuals', 'kcd'}, default='invariant_residuals'
+    dag : np.ndarray, shape (m, m)
+        Adjacency matrix
+    test : {'invariant_residuals', 'kcd'}, default='kci'
         Test for equality of distribution
     test_kwargs : dict, optional
         Dictionary of named arguments for the independence test
@@ -72,7 +72,7 @@ def test_mechanism_shifts(Xs, parent_graph, test='invariant_residuals', test_kwa
         pvalues for each pairwise test
     """
     E = len(Xs)
-    parent_graph = np.asarray(parent_graph)
+    parent_graph = np.asarray(dag).T
     M = parent_graph.shape[0]
     pvalues = np.ones((M, E, E))
 
@@ -86,7 +86,7 @@ def test_mechanism_shifts(Xs, parent_graph, test='invariant_residuals', test_kwa
     return num_shifts, pvalues
 
 
-def test_mechanism(Xs, m, parents, test='invariant_residuals', test_kwargs={}):
+def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
     """Tests a mechanism"""
 
     E = len(Xs)
@@ -97,7 +97,8 @@ def test_mechanism(Xs, m, parents, test='invariant_residuals', test_kwargs={}):
         for e2 in range(e1 + 1, E):
             if sum(parents) == 0:
                 stat, pvalue = MMD().test(
-                    Xs[e1][:, m], Xs[e2][:, m]
+                    Xs[e1][:, m].reshape(-1, 1),
+                    Xs[e2][:, m].reshape(-1, 1),
                 )
             else:
                 if test == 'kcd':

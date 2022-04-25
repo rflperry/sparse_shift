@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def plot_dag(
     adj,
     topological_sort=True,
-    parent_edges=True,
+    parent_adj=False,
     layout="circular",
     figsize=(5, 5),
     title=None,
@@ -17,7 +17,7 @@ def plot_dag(
     highlight_edges=None,
     labels=None,
 ):
-    if parent_edges:
+    if parent_adj:
         adj = adj.T
  
     G = nx.convert_matrix.from_numpy_matrix(adj, create_using=nx.DiGraph)
@@ -45,7 +45,7 @@ def plot_dag(
             labeldict[i] = labels[i]
 
     if highlight_edges is not None:
-        if parent_edges:
+        if parent_adj:
             highlight_edges = highlight_edges.T
         black_edges = [edge for edge in G.edges() if ((adj[edge] == 1) and (highlight_edges[edge] == 0))]
         red_edges = [edge for edge in G.edges() if ((adj[edge] == 1) and (highlight_edges[edge] != 0))]
