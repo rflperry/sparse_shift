@@ -63,7 +63,8 @@ def cpdag2dags(adj):
     for elist in dags_elist:
         G = np.zeros(adj.shape)
         elist = np.asarray(list(elist))
-        G[elist[:, 0], elist[:, 1]] = 1
+        if len(elist) > 0:
+            G[elist[:, 0], elist[:, 1]] = 1
         dags.append(G)
     
     return dags

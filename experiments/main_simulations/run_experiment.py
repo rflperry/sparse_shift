@@ -17,7 +17,7 @@ from sparse_shift.datasets import (
 from sparse_shift.plotting import plot_dag
 from sparse_shift.testing import test_mechanism_shifts, test_mechanism
 from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange
-from sparse_shift.metrics import dag_tpr, dag_fpr
+from sparse_shift.metrics import dag_precision, dag_recall
 from sparse_shift.utils import dag2cpdag, cpdag2dags
 from tqdm import tqdm
 
@@ -31,21 +31,23 @@ os.environ["PYTHONWARNINGS"] = "ignore"  # Also affect subprocesses
 EXPERIMENT_DICT = {
     "environment_convergence": {
         "n_variables": [6],
-        "n_total_environments": [5],
-        "sparsity": [1, 2, 5],
-        "sample_size": [100],
+        "n_total_environments": [15],
+        "sparsity": [1, 2, 4],
+        "sample_size": [500],
         "dag_density": [0.3],
-        "reps": [3],
+        "reps": [10],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["er", "ba"],
-        # "test": ["Min changes (kci)"],
-        # "test_kwargs": [
-        #     {
-        #         "KernelX": "GaussianKernel",
-        #         "KernelY": "GaussianKernel",
-        #         "KernelZ": "GaussianKernel",
-        #     }
-        # ],
+    },
+    "soft_samples": {
+        "n_variables": [6],
+        "n_total_environments": [5],
+        "sparsity": [1, 2, 4],
+        "sample_size": [50, 100, 200, 300, 500],
+        "dag_density": [0.3],
+        "reps": [20],
+        "data_simulator": ["cdnod"],
+        "dag_simulator": ["er"],
     }
 }
 
@@ -60,6 +62,12 @@ def _sample_dag(dag_simulator, n_variables, dag_density, seed=None):
         dag = barabasi_albert_dag(n_variables, dag_density, seed=seed)
     else:
         raise ValueError(f"DAG simulator {dag_simulator} not valid optoion")
+
+    if len(cpdag2dags(dag2cpdag(dag))) == 1:
+        # Don't sample already solved MECs
+        np.random.seed(seed)
+        new_seed = int(1000*np.random.uniform())
+        dag = _sample_dag(dag_simulator, n_variables, dag_density, new_seed)
 
     return dag
 
@@ -117,8 +125,9 @@ def main(args):
         [
             ["params_index"],
             list(param_keys),
-            ["Method", "Number of environments", "Rep"],
-            ["Number of possible DAGs", "True positive rate", "False positive rate"],
+            ["Method", "Soft", "Number of environments", "Rep"],
+            ["Number of possible DAGs", "MEC size", "MEC total edges", "MEC unoriented edges"],
+            ["Precision", "Recall"],
         ]
     )
     write_file = open(f"./results/{args.experiment}_results.csv", "w+")
@@ -168,6 +177,9 @@ def run_experimental_setting(
         # Get DAG
         true_dag = _sample_dag(dag_simulator, n_variables, dag_density, seed=rep)
         true_cpdag = dag2cpdag(true_dag)
+        mec_size = len(cpdag2dags(true_cpdag))
+        total_edges = np.sum(true_dag)
+        unoriented_edges = np.sum((true_cpdag + true_cpdag.T) == 2)
 
         # Get interventions
         intervention_targets = _sample_interventions(
@@ -190,11 +202,15 @@ def run_experimental_setting(
                         str,
                         experimental_params + [
                             "PC (pool all)",
+                            False,
                             n_env,
                             rep,
                             len(fpc_oracle.get_mec_dags()),
-                            dag_tpr(true_dag, cpdag),
-                            dag_fpr(true_dag, cpdag),
+                            mec_size,
+                            total_edges,
+                            unoriented_edges,
+                            dag_precision(true_dag, cpdag),
+                            dag_recall(true_dag, cpdag),
                         ],
                     )
                 )
@@ -203,7 +219,7 @@ def run_experimental_setting(
             write_file.flush()
 
             # results_mat.append([
-            #     rep, 'PC (pool all)', sparsity, n_env, len(fpc.get_mec_dags()), dag_tpr(true_dag, cpdag), dag_fpr(true_dag, cpdag)
+            #     rep, 'PC (pool all)', sparsity, n_env, len(fpc.get_mec_dags()), dag_true_orientations(true_dag, cpdag), dag_false_orientations(true_dag, cpdag)
             # ])
 
             cpdag = mch_oracle.get_min_cpdag()
@@ -213,11 +229,15 @@ def run_experimental_setting(
                         str,
                         experimental_params + [
                             "Min changes (oracle)",
+                            False,
                             n_env,
                             rep,
                             len(mch_oracle.get_min_dags()),
-                            dag_tpr(true_dag, cpdag),
-                            dag_fpr(true_dag, cpdag),
+                            mec_size,
+                            total_edges,
+                            unoriented_edges,
+                            dag_precision(true_dag, cpdag),
+                            dag_recall(true_dag, cpdag),
                         ],
                     )
                 )
@@ -225,7 +245,7 @@ def run_experimental_setting(
             )
             write_file.flush()
             # results_mat.append([
-            #     rep, 'Min changes (oracle)', sparsity, n_env, len(mch_oracle.get_min_dags()), dag_tpr(true_dag, cpdag), dag_fpr(true_dag, cpdag)
+            #     rep, 'Min changes (oracle)', sparsity, n_env, len(mch_oracle.get_min_dags()), dag_true_orientations(true_dag, cpdag), dag_false_orientations(true_dag, cpdag)
             # ])
 
         del fpc_oracle, mch_oracle
@@ -236,37 +256,63 @@ def run_experimental_setting(
         )
 
         # Compute empirical results
-        mch = MinChange(true_cpdag, alpha=0.05, scale_alpha=True)
-        for n_env, X in enumerate(Xs):
-            n_env += 1
-            mch.add_environment(X)
-
-            min_cpdag = mch.get_min_cpdag()
-            write_file.write(
-                ", ".join(
-                    map(
-                        str,
-                        experimental_params + [
-                            "Min changes (kci)",
-                            n_env,
-                            rep,
-                            len(mch.get_min_dags()),
-                            dag_tpr(true_dag, min_cpdag),
-                            dag_fpr(true_dag, min_cpdag),
-                        ],
-                    )
+        for save_name, method_name, mch in zip(
+            ('mch_kci', 'mch_lin'),
+            ('Min changes (kci)', 'Min changes (linear)'),
+            (
+                MinChange(
+                    true_cpdag,
+                    alpha=0.05,
+                    scale_alpha=True,
+                    test='kci',
+                    test_kwargs={
+                        "KernelX": "GaussianKernel",
+                        "KernelY": "GaussianKernel",
+                        "KernelZ": "GaussianKernel",
+                    },
+                ),
+                MinChange(
+                    true_cpdag, alpha=0.05, scale_alpha=True,
+                    test='invariant_residuals',
+                    test_kwargs={'method': 'linear', 'test': "whitney_levene"},
                 )
-                + "\n"
             )
-            write_file.flush()
-            # results_mat.append([
-            #     rep, 'Min changes', sparsity, n_env, len(mch.get_min_dags()), dag_tpr(true_dag, min_cpdag), dag_fpr(true_dag, min_cpdag)
-            # ])
+        ):
 
-        np.save(
-            f"./results/pvalue_mats/{name}_mch_pvalues_params={params_index}_rep={rep}.npy",
-            mch.pvalues_,
-        )
+            for n_env, X in enumerate(Xs):
+                n_env += 1
+                mch.add_environment(X)
+
+                for soft in [True, False]:
+                    min_cpdag = mch.get_min_cpdag(soft)
+                    write_file.write(
+                        ", ".join(
+                            map(
+                                str,
+                                experimental_params + [
+                                    method_name,
+                                    soft,
+                                    n_env,
+                                    rep,
+                                    len(mch.get_min_dags(soft)),
+                                    mec_size,
+                                    total_edges,
+                                    unoriented_edges,
+                                    dag_precision(true_dag, min_cpdag),
+                                    dag_recall(true_dag, min_cpdag),
+                                ],
+                            )
+                        )
+                        + "\n"
+                    )
+                    write_file.flush()
+
+                # Save pvalues
+                np.save(
+                    f"./results/pvalue_mats/{name}_{save_name}_pvalues_params={params_index}_rep={rep}.npy",
+                    mch.pvalues_,
+                )
+
 
 
 if __name__ == "__main__":
@@ -274,7 +320,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--experiment",
         help="experiment parameters to run",
-        choices=["environment_convergence"],
+        choices=list(EXPERIMENT_DICT.keys()),
     )
     args = parser.parse_args()
 

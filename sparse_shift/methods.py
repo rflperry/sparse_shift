@@ -155,11 +155,30 @@ class MinChange:
     def n_dag_changes_(self):
         return np.sum(self.pvalues_ <= self.alpha_, axis=(1, 2, 3)) / 2
 
-    def get_min_dags(self):
-        min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
+    @property
+    def soft_scores_(self):
+        # index i,j = 1 if dag i changes "more" than dag j
+        # rankings = np.zeros((self.n_dags_, self.n_dags_))
+        # for i in range(self.n_dags_):
+        #     for j in range(i+1, self.n_dags_):
+        #         # If more pvals in i are less than in j, then i "changes more"
+        #         changes = np.sign(self.pvalues_[i] - self.pvalues_[j]).sum()
+        #         rankings[i, j] = int(changes < 0)
+        #         rankings[j, i] = int(changes > 0)
+
+        scores = np.sum(1 - self.pvalues_, axis=(1, 2, 3))
+
+        return scores
+
+    def get_min_dags(self, soft=False):
+        if soft:
+            scores = self.soft_scores_
+            min_idx = np.where(scores == np.min(scores))[0]
+        else:
+            min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
         return self.dags_[min_idx]
     
-    def get_min_cpdag(self):
-        min_dags = self.get_min_dags()
+    def get_min_cpdag(self, soft=False):
+        min_dags = self.get_min_dags(soft=soft)
         cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
         return cpdag

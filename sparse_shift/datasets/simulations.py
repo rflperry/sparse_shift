@@ -1,10 +1,11 @@
 """Simulated causal datasets"""
 
 import numpy as np
+import networkx as nx
 from functools import partial
 
 
-def sample_topological(n, equations, noise, random_state=None):
+def sample_topological(n, equations, dag, noise, random_state=None):
     """
     Samples from a Structural Causal Model (SCM) in topological order
 
@@ -34,6 +35,8 @@ def sample_topological(n, equations, noise, random_state=None):
     n_vars = len(equations)
     X = np.zeros((n_vars, n))
 
+    topological_order = list(nx.topological_sort(nx.DiGraph(dag)))
+
     if not callable(noise):
         assert len(equations) == len(
             noise
@@ -41,7 +44,8 @@ def sample_topological(n, equations, noise, random_state=None):
             equations as noise variables. Provided {len(equations)} and \
                 {len(noise)}"
 
-    for i, f in enumerate(equations):
+    for i in topological_order:
+        f = equations[i]
         if not callable(noise):
             u = np.asarray([noise[i]() for _ in range(n)])
         else:
@@ -90,9 +94,9 @@ def sample_nonlinear_icp_sim(
     Parameters
     ----------
     dag : numpy.ndarray, shape (m, m)
-        Weight matrix of parental relations in directed acyclic graph.
-        dag[i, j] != 0 if there is an edge from Xj -> Xi. The edge weight
-        dag[i, j] will weight Xj in the computation of Xi,
+        Weighted adjacency matrix.
+        dag[i, j] != 0 if there is an edge from Xi -> Xj. The edge weight
+        dag[i, j] will weight Xi in the computation of Xj,
 
     n_samples : int
         Number of training samples
@@ -217,22 +221,22 @@ def sample_nonlinear_icp_sim(
             intervention_func=intervention_func,
             pre_intervention=pre_intervention,
         )
-        for i, parents in enumerate(dag)
+        for i, parents in enumerate(dag.T)
     ]
 
-    X = sample_topological(n_samples, equations, noise, random_state)
+    X = sample_topological(n_samples, equations, dag, noise, random_state)
 
     return X
 
 
-def _cdnod_base_func(X, u, parents, coefs, functions, noise_scale):
+def _cdnod_base_func(X, u, parents, coefs, functions, noise_scale, noise_shift):
     """Helper function for icp simulations"""
     # X shape (m_features, n_samples)
-    X = X * parents[:, np.newaxis]
+    # X = X * parents[:, np.newaxis]
     X = X[parents != 0]
     # X shape (m_parents, n_samples)
     X = np.asarray([b * f(x) for b, f, x in zip(coefs, functions, X)])
-    return np.sum(X, axis=0) + noise_scale * u
+    return np.sum(X, axis=0) + noise_scale * (u + noise_shift)
 
 
 def sample_cdnod_sim(
@@ -246,7 +250,7 @@ def sample_cdnod_sim(
     ],
     intervention_targets=None,
     intervention_pct=None,
-    base_random_state=123,
+    base_random_state=None,
     domain_random_state=None,
 ):
     """
@@ -316,7 +320,8 @@ def sample_cdnod_sim(
             parents=parents,
             coefs=base_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=base_seed.choice(functions, size=(np.sum(parents))),
-            noise_scale=base_seed.uniform(1, 3),
+            noise_scale=1,
+            noise_shift=0,
         )
         for i, parents in enumerate(dag.T)
     ]
@@ -328,6 +333,7 @@ def sample_cdnod_sim(
             coefs=domain_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=domain_seed.choice(functions, size=(np.sum(parents))),
             noise_scale=domain_seed.uniform(1, 3),
+            noise_shift=0,#domain_seed.uniform(0, 3),
         )
         for i, parents in enumerate(dag.T)
     ]
@@ -358,6 +364,6 @@ def sample_cdnod_sim(
             base_noises, domain_noises))
     ]
 
-    X = sample_topological(n_samples, equations, noises, domain_random_state)
+    X = sample_topological(n_samples, equations, dag, noises, domain_random_state)
 
     return X
