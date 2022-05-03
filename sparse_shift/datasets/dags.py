@@ -24,8 +24,8 @@ def erdos_renyi_dag(n, p, seed=None):
     number of connected edges. Else, it is the expected degree
     fraction relative to n.
     """
-    if isinstance(p, int):
-        p = p / n
+    if p > 1 or isinstance(p, int):
+        p = p / (n - 1)
     G = nx.erdos_renyi_graph(n, p, seed, directed=False)
     return _graph2dag(G)
 
@@ -41,7 +41,7 @@ def connected_erdos_renyi_dag(n, p, seed=None):
     number of connected edges. Else, it is the expected degree
     fraction relative to n.
     """
-    if isinstance(p, float):
+    if p <= 1 and isinstance(p, float):
         p = p * n
         if int(p) != p:
             import warnings
@@ -64,12 +64,12 @@ def barabasi_albert_dag(n, p, seed=None):
     fraction relative to n. Important, p must be <= 0.5
     or the integer equivalent to be guaranteed to succeed on all graphs.
     """
-    if isinstance(p, int):
-        p = p / n
+    if p > 1 or isinstance(p, int):
+        p = p / (n - 1)
 
     # BA model input m leads to K=(1+...+m) + m*(n-m) total edges
     # p = K
-    m = 0.5*(2*n + 1 - np.sqrt(4*n**2 - 8*p*n**2 + 4*n + 1))
+    m = 0.5*(2*n - 1 - np.sqrt(4*n**2 - 4*n + 1 - 4*p*n**2 + 4*p*n))
     if int(m) != m:
         import warnings
         warnings.warn(f'Number of neighbors {m:.1f} will be rounded')
