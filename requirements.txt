@@ -6,3 +6,4 @@ networkx
 joblib
 causal-learn
 causaldag
+hyppo
