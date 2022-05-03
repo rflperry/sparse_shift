@@ -23,7 +23,7 @@ from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange
 from sparse_shift.metrics import dag_true_orientations, dag_false_orientations, \
     dag_precision, dag_recall, average_precision_score
 from sparse_shift.utils import dag2cpdag, cpdag2dags
-from exp_settings import get_experiments, get_experiment_methods, get_experiment_params
+from exp_settings import get_experiments, get_experiment_methods, get_experiment_params, get_param_keys
 
 import os
 import warnings
@@ -102,15 +102,11 @@ def main(args):
     logging.info(f"Experimental settings:")
     logging.info(get_experiment_params(args.experiment))
 
-    # Construct parameter grids
-    param_keys, param_values = zip(*get_experiment_params(args.experiment).items())
-    params_grid = [dict(zip(param_keys, v)) for v in itertools.product(*param_values)]
-
     # Create results csv header
     header = np.hstack(
         [
             ["params_index"],
-            list(param_keys),
+            get_param_keys(args.experiment),
             ["Method", "Soft", "Number of environments", "Rep"],
             ["Number of possible DAGs", "MEC size", "MEC total edges", "MEC unoriented edges"],
             ["True orientation rate", "False orientation rate", "Precision", "Recall", 'Average precision'],
@@ -120,17 +116,27 @@ def main(args):
     write_file.write(", ".join(header) + "\n")
     write_file.flush()
 
-    # Iterate over
-    logging.info(f'{len(params_grid)} total parameter combinations')
+    # Construct parameter grids
+    param_dicts = get_experiment_params(args.experiment)
+    prior_indices = 0
+    logging.info(f'{len(param_dicts)} total parameter dictionaries')
+    for params_dict in param_dicts:
+        param_keys, param_values = zip(*params_dict.items())
+        params_grid = [dict(zip(param_keys, v)) for v in itertools.product(*param_values)]
 
-    for i, params in enumerate(params_grid):
-        logging.info(f"Params {i} / {len(params_grid)}")
-        run_experimental_setting(
-            args=args,
-            params_index=i,
-            write_file=write_file,
-            **params,
-        )
+        # Iterate over
+        logging.info(f'{len(params_grid)} total parameter combinations')
+
+        for i, params in enumerate(params_grid):
+            logging.info(f"Params {i} / {len(params_grid)}")
+            run_experimental_setting(
+                args=args,
+                params_index=i,
+                write_file=write_file,
+                **params,
+            )
+        
+        prior_indices += len(params_grid)
 
 
 def run_experimental_setting(

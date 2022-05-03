@@ -1,7 +1,7 @@
 from sparse_shift.methods import MinChange
 
 PARAMS_DICT = {
-    "DEBUG": {
+    "DEBUG": [{
         "n_variables": [3],
         "n_total_environments": [3],
         "sparsity": [2],
@@ -11,8 +11,8 @@ PARAMS_DICT = {
         "reps": [3],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["er"],
-    },
-    "environment_convergence": {
+    }],
+    "environment_convergence": [{
         "n_variables": [6],
         "n_total_environments": [15],
         "sparsity": [1, 2, 4],
@@ -22,8 +22,8 @@ PARAMS_DICT = {
         "reps": [10],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["er", "ba"],
-    },
-    "soft_samples": {
+    }],
+    "soft_samples": [{
         "n_variables": [6],
         "n_total_environments": [5],
         "sparsity": [1, 2, 4],
@@ -33,19 +33,65 @@ PARAMS_DICT = {
         "reps": [20],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["er"],
-    },
-    "oracle_rates": {
-        "n_variables": [4, 6, 10],
+    }],
+    "oracle_rates": [{
+        "n_variables": [6, 8, 10, 12],
         "n_total_environments": [2, 5],
-        "sparsity": [1, 2, 3, 5, 8],
+        "sparsity": [1, 3, 5, 7, 9, 11],
         'intervention_targets': [None],
         "sample_size": [None],
         "dag_density": [0.1, 0.3, 0.5, 0.7, 0.9],
         "reps": [20],
         "data_simulator": [None],
         "dag_simulator": ["er"],
-    },
-    "bivariate_power": {
+    }],
+    "oracle_select_rates": [
+        {
+            "n_variables": [6, 8, 10, 12],
+            "n_total_environments": [5],
+            "sparsity": [3],
+            'intervention_targets': [None],
+            "sample_size": [None],
+            "dag_density": [0.3],
+            "reps": [20],
+            "data_simulator": [None],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [8],
+            "n_total_environments": [5],
+            "sparsity": [1, 3, 5, 7],
+            'intervention_targets': [None],
+            "sample_size": [None],
+            "dag_density": [0.3],
+            "reps": [20],
+            "data_simulator": [None],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [8],
+            "n_total_environments": [2, 3, 4, 5, 7, 10, 15],
+            "sparsity": [3],
+            'intervention_targets': [None],
+            "sample_size": [None],
+            "dag_density": [0.3],
+            "reps": [20],
+            "data_simulator": [None],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [8],
+            "n_total_environments": [5],
+            "sparsity": [3],
+            'intervention_targets': [None],
+            "sample_size": [None],
+            "dag_density": [0.1, 0.3, 0.5, 0.7, 0.9],
+            "reps": [20],
+            "data_simulator": [None],
+            "dag_simulator": ["er"],
+        },
+    ],
+    "bivariate_power": [{
         "n_variables": [2],
         "n_total_environments": [2],
         "sparsity": [None],
@@ -53,14 +99,14 @@ PARAMS_DICT = {
             [[], [0]],
             [[], [1]],
             [[], []],
-            [[0], [1]],
+            [[], [0, 1]],
         ],
         "sample_size": [200],
         "dag_density": [None],
         "reps": [20],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["complete"],
-    }
+    }]
 }
 
 
@@ -165,6 +211,10 @@ METHODS_DICT = {
 
 def get_experiment_params(exp):
     return PARAMS_DICT[exp]
+
+
+def get_param_keys(exp):
+    return list(PARAMS_DICT[exp][0].keys())
 
 
 def get_experiments():
