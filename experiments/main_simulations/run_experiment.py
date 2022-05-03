@@ -131,7 +131,7 @@ def main(args):
             logging.info(f"Params {i} / {len(params_grid)}")
             run_experimental_setting(
                 args=args,
-                params_index=i,
+                params_index=i + prior_indices,
                 write_file=write_file,
                 **params,
             )
@@ -212,7 +212,7 @@ def run_experimental_setting(
                 map(
                     str,
                     experimental_params + [
-                        "PC (pool all)",
+                        "Full PC (oracle)",
                         False,
                         n_env,
                         rep,

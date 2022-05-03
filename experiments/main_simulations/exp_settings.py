@@ -55,7 +55,7 @@ PARAMS_DICT = {
             "dag_density": [0.3],
             "reps": [20],
             "data_simulator": [None],
-            "dag_simulator": ["er"],
+            "dag_simulator": ["er", 'ba'],
         },
         {
             "n_variables": [8],
@@ -66,7 +66,7 @@ PARAMS_DICT = {
             "dag_density": [0.3],
             "reps": [20],
             "data_simulator": [None],
-            "dag_simulator": ["er"],
+            "dag_simulator": ["er", 'ba'],
         },
         {
             "n_variables": [8],
@@ -77,7 +77,7 @@ PARAMS_DICT = {
             "dag_density": [0.3],
             "reps": [20],
             "data_simulator": [None],
-            "dag_simulator": ["er"],
+            "dag_simulator": ["er", 'ba'],
         },
         {
             "n_variables": [8],
@@ -85,10 +85,10 @@ PARAMS_DICT = {
             "sparsity": [3],
             'intervention_targets': [None],
             "sample_size": [None],
-            "dag_density": [0.1, 0.3, 0.5, 0.7, 0.9],
+            "dag_density": [0.3, 0.5, 0.7, 0.9, 0.1],
             "reps": [20],
             "data_simulator": [None],
-            "dag_simulator": ["er"],
+            "dag_simulator": ["er", 'ba'],
         },
     ],
     "bivariate_power": [{
@@ -145,6 +145,7 @@ METHODS_DICT = {
     "environment_convergence": ALL_METHODS,
     "soft_samples": ALL_METHODS,
     "oracle_rates": [],
+    "oracle_select_rates": [],
     "bivariate_power": [
         (
             'mch_kci',
