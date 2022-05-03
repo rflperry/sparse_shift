@@ -26,7 +26,7 @@ PARAMS_DICT = {
     "soft_samples": [{
         "n_variables": [6],
         "n_total_environments": [5],
-        "sparsity": [1, 2, 4],
+        "sparsity": [1, 2, 3, 4, 5, 6],
         'intervention_targets': [None],
         "sample_size": [50, 100, 200, 300, 500],
         "dag_density": [0.3],
