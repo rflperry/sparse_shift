@@ -20,7 +20,8 @@ from sparse_shift.datasets import (
 from sparse_shift.plotting import plot_dag
 from sparse_shift.testing import test_mechanism_shifts, test_mechanism
 from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange
-from sparse_shift.metrics import dag_precision, dag_recall
+from sparse_shift.metrics import dag_true_orientations, dag_false_orientations, \
+    dag_precision, dag_recall, average_precision_score
 from sparse_shift.utils import dag2cpdag, cpdag2dags
 from exp_settings import get_experiments, get_experiment_methods, get_experiment_params
 
@@ -112,7 +113,7 @@ def main(args):
             list(param_keys),
             ["Method", "Soft", "Number of environments", "Rep"],
             ["Number of possible DAGs", "MEC size", "MEC total edges", "MEC unoriented edges"],
-            ["Precision", "Recall"],
+            ["True orientation rate", "False orientation rate", "Precision", "Recall", 'Average precision'],
         ]
     )
     write_file = open(f"./results/{args.experiment}_results.csv", "w+")
@@ -121,21 +122,7 @@ def main(args):
 
     # Iterate over
     logging.info(f'{len(params_grid)} total parameter combinations')
-    # if args.jobs is not None:
-    #     results = Parallel(
-    #             n_jobs=args.jobs,
-    #         )(
-    #             delayed(
-    #                 run_experimental_setting
-    #             )(
-    #                 args, i, write_file, False,
-    #                 **params,
-    #             ) for i, params in enumerate(params_grid)
-    #         )
-    #     for result in results:
-    #         write_file.write(result)
-    #     write_file.flush()
-    # else:
+
     for i, params in enumerate(params_grid):
         logging.info(f"Params {i} / {len(params_grid)}")
         run_experimental_setting(
@@ -209,6 +196,12 @@ def run_experimental_setting(
 
             cpdag = fpc_oracle.get_mec_cpdag()
 
+            true_orients = np.round(dag_true_orientations(true_dag, cpdag), 4)
+            false_orients = np.round(dag_false_orientations(true_dag, cpdag), 4)
+            precision = np.round(dag_precision(true_dag, cpdag), 4)
+            recall = np.round(dag_recall(true_dag, cpdag), 4)
+            ap = recall
+
             result = ", ".join(
                 map(
                     str,
@@ -221,8 +214,11 @@ def run_experimental_setting(
                         mec_size,
                         total_edges,
                         unoriented_edges,
-                        np.round(dag_precision(true_dag, cpdag), 4),
-                        np.round(dag_recall(true_dag, cpdag), 4),
+                        true_orients,
+                        false_orients,
+                        precision,
+                        recall,
+                        ap,
                     ],
                 )
             ) + "\n"
@@ -233,6 +229,12 @@ def run_experimental_setting(
                 results.append(result)
 
             cpdag = mch_oracle.get_min_cpdag()
+
+            true_orients = np.round(dag_true_orientations(true_dag, cpdag), 4)
+            false_orients = np.round(dag_false_orientations(true_dag, cpdag), 4)
+            precision = np.round(dag_precision(true_dag, cpdag), 4)
+            recall = np.round(dag_recall(true_dag, cpdag), 4)
+            ap = recall
 
             result = ", ".join(
                 map(
@@ -246,8 +248,11 @@ def run_experimental_setting(
                         mec_size,
                         total_edges,
                         unoriented_edges,
-                        np.round(dag_precision(true_dag, cpdag), 4),
-                        np.round(dag_recall(true_dag, cpdag), 4),
+                        true_orients,
+                        false_orients,
+                        precision,
+                        recall,
+                        ap,
                     ],
                 )
             ) + "\n"
@@ -281,6 +286,12 @@ def run_experimental_setting(
                 for soft in [True, False]:
                     min_cpdag = mch.get_min_cpdag(soft)
 
+                    true_orients = np.round(dag_true_orientations(true_dag, min_cpdag), 4)
+                    false_orients = np.round(dag_false_orientations(true_dag, min_cpdag),4 )
+                    precision = np.round(dag_precision(true_dag, min_cpdag), 4)
+                    recall = np.round(dag_recall(true_dag, min_cpdag), 4)
+                    ap = np.round(average_precision_score(true_dag, mch.pvalues_), 4)
+
                     result = ", ".join(
                         map(
                             str,
@@ -293,8 +304,11 @@ def run_experimental_setting(
                                 mec_size,
                                 total_edges,
                                 unoriented_edges,
-                                np.round(dag_precision(true_dag, min_cpdag), 4),
-                                np.round(dag_recall(true_dag, min_cpdag), 4),
+                                true_orients,
+                                false_orients,
+                                precision,
+                                recall,
+                                ap,
                             ],
                         )
                     ) + "\n"

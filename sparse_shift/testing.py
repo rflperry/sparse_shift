@@ -131,6 +131,8 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                     ])
                     condition_set = tuple(np.where(parents > 0)[0] + 1)
                     pvalue = kci(data, 0, m+1, condition_set)
+                else:
+                    raise ValueError(f'Test {test} not implemented.')
             pvalues[e1, e2] = pvalue
             pvalues[e2, e1] = pvalue
 
