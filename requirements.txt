@@ -3,6 +3,6 @@ scikit-learn
 matplotlib
 seaborn
 networkx
-# hyppo
+joblib
 causal-learn
 causaldag

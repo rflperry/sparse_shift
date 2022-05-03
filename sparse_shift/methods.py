@@ -44,7 +44,7 @@ class PairwisePC:
 
     def add_environment(self, interventions):        
         for prior_targets in self.interv_targets_:
-            pairwise_targets = np.unique(np.hstack((prior_targets, interventions)))
+            pairwise_targets = np.unique(np.hstack((prior_targets, interventions))).astype(int)
             intv_cpdag = dag2cpdag(self.dag, pairwise_targets)
             self.union_cpdag_ += intv_cpdag
         
@@ -78,8 +78,8 @@ class MinChangeOracle:
     def add_environment(self, interventions):
         for prior_targets in self.interv_targets_:
             n_changes = np.zeros(len(self.min_dags_))
-            pairwise_targets = np.unique(np.hstack((prior_targets, interventions)))
-            
+            pairwise_targets = np.unique(np.hstack((prior_targets, interventions))).astype(int)
+
             n_vars = self.dag.shape[0]
             aug_dag_adj = np.zeros((n_vars+1, n_vars+1))
             aug_dag_adj[:-1, :-1] = self.dag

@@ -76,3 +76,11 @@ def barabasi_albert_dag(n, p, seed=None):
 
     G = nx.barabasi_albert_graph(n, round(m), seed)
     return _graph2dag(G)
+
+
+def complete_dag(n, p=None, seed=None):
+    """
+    Returns a complete DAG over n variables
+    """
+    G = np.ones((n, n)) - np.eye(n)
+    return np.tril(G)
