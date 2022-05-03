@@ -3,7 +3,7 @@ from setuptools import setup
 VERSION = 1.0
 PACKAGE_NAME = "sparse_shift"
 DESCRIPTION = "Conditional independence tools for causal learning under the sparse mechanism shift hypothesis."
-with open("README", "r") as f:
+with open("README.md", "r") as f:
     LONG_DESCRIPTION = f.read()
 AUTHOR = ("Ronan Perry",)
 AUTHOR_EMAIL = "rflperry@gmail.com"
