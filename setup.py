@@ -1,4 +1,5 @@
-from setuptools import setup
+from setuptools import find_packages, setup
+
 
 VERSION = 1.0
 PACKAGE_NAME = "sparse_shift"
@@ -19,4 +20,5 @@ setup(
     author_email=AUTHOR_EMAIL,
     install_requires=REQUIRED_PACKAGES,
     license="MIT",
+    packages=find_packages(),
 )
