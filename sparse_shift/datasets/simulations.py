@@ -333,7 +333,7 @@ def sample_cdnod_sim(
             coefs=domain_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=domain_seed.choice(functions, size=(np.sum(parents))),
             noise_scale=domain_seed.uniform(1, 3),
-            noise_shift=0,#domain_seed.uniform(0, 3),
+            noise_shift=0,
         )
         for i, parents in enumerate(dag.T)
     ]

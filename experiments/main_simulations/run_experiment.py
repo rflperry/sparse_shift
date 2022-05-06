@@ -275,7 +275,7 @@ def run_experimental_setting(
             return results
 
         Xs = _sample_datasets(
-            data_simulator, sample_size, true_dag, sampled_targets, seed=rep
+            data_simulator, sample_size, true_dag, sampled_targets#, seed=rep
         )
 
         # Compute empirical results

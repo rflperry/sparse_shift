@@ -14,14 +14,14 @@ PARAMS_DICT = {
     }],
     "environment_convergence": [{
         "n_variables": [6],
-        "n_total_environments": [15],
+        "n_total_environments": [10],
         "sparsity": [1, 2, 4],
         'intervention_targets': [None],
         "sample_size": [500],
         "dag_density": [0.3],
-        "reps": [10],
+        "reps": [20],
         "data_simulator": ["cdnod"],
-        "dag_simulator": ["er", "ba"],
+        "dag_simulator": ["er"],
     }],
     "soft_samples": [{
         "n_variables": [6],
@@ -114,7 +114,7 @@ PARAMS_DICT = {
 ALL_METHODS = [
     (
         'mch_kci',
-        'Min changes (kci)',
+        'Min changes (KCI)',
         MinChange,
         {
             'alpha': 0.05,
@@ -129,7 +129,7 @@ ALL_METHODS = [
     ),
     (
         'mch_lin',
-        'Min changes (linear)',
+        'Min changes (Linear)',
         MinChange,
         {
             'alpha': 0.05,
@@ -138,12 +138,34 @@ ALL_METHODS = [
             'test_kwargs': {'method': 'linear', 'test': "whitney_levene"},
         }
     ),
+    (
+        'mch_gam',
+        'Min changes (GAM)',
+        MinChange,
+        {
+            'alpha': 0.05,
+            'scale_alpha': True,
+            'test': 'invariant_residuals',
+            'test_kwargs': {'method': 'gam', 'test': "whitney_levene"},
+        }
+    ),
+    (
+        'mch_fisherz',
+        'Min changes (FisherZ)',
+        MinChange,
+        {
+            'alpha': 0.05,
+            'scale_alpha': True,
+            'test': 'fisherz',
+            'test_kwargs': {},
+        }
+    ),
 ]
 
 METHODS_DICT = {
     "DEBUG": ALL_METHODS[:1],
     "environment_convergence": ALL_METHODS,
-    "soft_samples": ALL_METHODS,
+    "soft_samples": ALL_METHODS[:2],
     "oracle_rates": [],
     "oracle_select_rates": [],
     "bivariate_power": [
