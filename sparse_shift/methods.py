@@ -140,13 +140,19 @@ class MinChange:
             self.pvalues_[:, :, :self.n_envs_, :self.n_envs_] = old_changes
         
         for env, prior_X in enumerate(self.Xs_):
-            pvalues = test_dag_shifts(  # shape (n_dags, 2, 2)
-                Xs=[prior_X, X],
-                dags=self.dags_,
-                test=self.test,
-                test_kwargs=self.test_kwargs)
-            self.pvalues_[:, :, -1, env] = pvalues[:, :, 0, 1]
-            self.pvalues_[:, :, env, -1] = pvalues[:, :, 0, 1]
+            try:
+                pvalues = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
+                    Xs=[prior_X, X],
+                    dags=self.dags_,
+                    test=self.test,
+                    test_kwargs=self.test_kwargs)
+                self.pvalues_[:, :, -1, env] = pvalues[:, :, 0, 1]
+                self.pvalues_[:, :, env, -1] = pvalues[:, :, 0, 1]
+            except ValueError as e:
+                print(e)
+                self.pvalues_[:, :, -1, env] = 1
+                self.pvalues_[:, :, env, -1] = 1
+            
 
         self.n_envs_ += 1
         self.Xs_.append(X)

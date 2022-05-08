@@ -60,6 +60,8 @@ def _sample_dag(dag_simulator, n_variables, dag_density, seed=None):
 
 def _sample_interventions(n_variables, n_total_environments, sparsity, seed=None):
     np.random.seed(seed)
+    if isinstance(sparsity, float):
+        sparsity = np.round(n_variables * sparsity).astype(int)
     sampled_targets = [
         np.random.choice(n_variables, sparsity, replace=False)
         for _ in range(n_total_environments)
@@ -137,6 +139,7 @@ def main(args):
             )
         
         prior_indices += len(params_grid)
+    logging.info(f'Complete')
 
 
 def run_experimental_setting(
@@ -155,6 +158,7 @@ def run_experimental_setting(
 ):
 
     name = args.experiment
+
 
     if sparsity is not None and sparsity > n_variables:
         logging.info(f"Skipping: sparsity {sparsity} greater than n_variables {n_variables}")
@@ -181,7 +185,7 @@ def run_experimental_setting(
         true_cpdag = dag2cpdag(true_dag)
         mec_size = len(cpdag2dags(true_cpdag))
         total_edges = np.sum(true_dag)
-        unoriented_edges = np.sum((true_cpdag + true_cpdag.T) == 2)
+        unoriented_edges = np.sum((true_cpdag + true_cpdag.T) == 2) // 2
 
         # Get interventions
         if intervention_targets is None:
@@ -325,8 +329,10 @@ def run_experimental_setting(
                         results.append(result)
 
                 # Save pvalues
+                if not os.path.exists(f'./results/pvalue_mats/{name}/'):
+                    os.makedirs(f'./results/pvalue_mats/{name}/')
                 np.save(
-                    f"./results/pvalue_mats/{name}_{save_name}_pvalues_params={params_index}_rep={rep}.npy",
+                    f"./results/pvalue_mats/{name}/{name}_{save_name}_pvalues_params={params_index}_rep={rep}.npy",
                     mch.pvalues_,
                 )
 
