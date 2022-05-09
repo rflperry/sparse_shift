@@ -45,6 +45,31 @@ def create_causal_learn_dag(G):
     return cl_dag
 
 
+def create_causal_learn_cpdag(G):
+    """Converts adj mat of cpdag to a causal learn graph object"""
+    from causallearn.graph.Edge import Edge
+    from causallearn.graph.Endpoint import Endpoint
+    from causallearn.graph.GeneralGraph import GeneralGraph
+    from causallearn.graph.GraphNode import GraphNode
+
+    n_vars = G.shape[0]
+    node_names = [("X%d" % (i + 1)) for i in range(n_vars)]
+    nodes = [GraphNode(name) for name in node_names]
+
+    cl_cpdag = GeneralGraph(nodes)
+
+    for i in range(n_vars):
+        for j in range(i + 1, n_vars):
+            if G[i, j] == 1 and G[j, i] == 1:
+                cl_cpdag.add_edge(Edge(nodes[i], nodes[j], Endpoint.TAIL, Endpoint.TAIL))
+            elif G[i, j] == 1 and G[j, i] == 0:
+                cl_cpdag.add_edge(Edge(nodes[i], nodes[j], Endpoint.TAIL, Endpoint.ARROW))
+            elif G[i, j] == 0 and G[j, i] == 1:
+                cl_cpdag.add_edge(Edge(nodes[i], nodes[j], Endpoint.ARROW, Endpoint.TAIL))
+
+    return cl_cpdag
+
+
 def dag2cpdag(adj, targets=None):
     """Converts an adjacency matrix to the cpdag adjacency matrix, with potential interventions"""
     dag = DAG().from_amat(adj)

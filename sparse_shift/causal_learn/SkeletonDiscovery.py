@@ -49,9 +49,15 @@ def augmented_skeleton_discovery(data: ndarray, alpha: float, indep_test, stable
     assert type(data) == np.ndarray
     assert 0 < alpha < 1
 
+    import copy
+    cg = copy.deepcopy(cg)
+
     no_of_var = data.shape[1]
-    if cg is None:
-        cg = CausalGraph(no_of_var)
+    nodes = cg.G.get_nodes()
+
+    # no_aug_skel = cg
+    # if cg is None:
+    # cg = CausalGraph(no_of_var)
     cg.set_ind_test(indep_test)
     cg.data_hash_key = hash(str(data))
     if indep_test == chisq or indep_test == gsq:
@@ -88,13 +94,9 @@ def augmented_skeleton_discovery(data: ndarray, alpha: float, indep_test, stable
             Neigh_x = cg.neighbors(x)
             if len(Neigh_x) < depth - 1:
                 continue
-            for y in range(no_of_var):
+            for y in [no_of_var - 1]: # range(no_of_var):
                 knowledge_ban_edge = False
                 sepsets = set()
-                if y not in Neigh_x:
-                    append_value(cg.sepset, x, y, tuple(sepsets))
-                    append_value(cg.sepset, y, x, tuple(sepsets))
-                    continue
                 if background_knowledge is not None and (
                         background_knowledge.is_forbidden(cg.G.nodes[x], cg.G.nodes[y])
                         and background_knowledge.is_forbidden(cg.G.nodes[y], cg.G.nodes[x])):
@@ -117,10 +119,11 @@ def augmented_skeleton_discovery(data: ndarray, alpha: float, indep_test, stable
                 Neigh_x_noy = np.delete(Neigh_x, np.where(Neigh_x == y))
 
                 for S in combinations(Neigh_x_noy, depth):
-                    if x != no_of_var-1 and y != no_of_var-1:
-                        p = 0
-                    else:
-                        p = cg.ci_test(x, y, S)
+                    # if x != no_of_var-1 and y != no_of_var-1:
+                    #     p = cg.G.is_dseparated_from(nodes[x], nodes[y], [nodes[s] for s in S] + [nodes[-1]])
+                    #     p = int(p)
+                    # else:
+                    p = cg.ci_test(x, y, S)
                     if p > alpha:
                         if verbose:
                             print('%d ind %d | %s with p-value %f\n' % (x, y, S, p))
@@ -129,6 +132,7 @@ def augmented_skeleton_discovery(data: ndarray, alpha: float, indep_test, stable
                             if edge1 is not None:
                                 cg.G.remove_edge(edge1)
                             edge2 = cg.G.get_edge(cg.G.nodes[y], cg.G.nodes[x])
+                            print(x, y, S, edge1, edge2)
                             if edge2 is not None:
                                 cg.G.remove_edge(edge2)
                             append_value(cg.sepset, x, y, S)

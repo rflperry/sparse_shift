@@ -279,7 +279,7 @@ def run_experimental_setting(
             return results
 
         Xs = _sample_datasets(
-            data_simulator, sample_size, true_dag, sampled_targets#, seed=rep
+            data_simulator, sample_size, true_dag, sampled_targets, seed=rep
         )
 
         # Compute empirical results
@@ -297,10 +297,14 @@ def run_experimental_setting(
                     min_cpdag = mch.get_min_cpdag(soft)
 
                     true_orients = np.round(dag_true_orientations(true_dag, min_cpdag), 4)
-                    false_orients = np.round(dag_false_orientations(true_dag, min_cpdag),4 )
+                    false_orients = np.round(dag_false_orientations(true_dag, min_cpdag), 4)
                     precision = np.round(dag_precision(true_dag, min_cpdag), 4)
                     recall = np.round(dag_recall(true_dag, min_cpdag), 4)
-                    ap = np.round(average_precision_score(true_dag, mch.pvalues_), 4)
+
+                    if hasattr(mch, 'pvalues_'):
+                        ap = np.round(average_precision_score(true_dag, mch.pvalues_), 4)
+                    else:
+                        ap = None
 
                     result = ", ".join(
                         map(
@@ -331,10 +335,11 @@ def run_experimental_setting(
                 # Save pvalues
                 if not os.path.exists(f'./results/pvalue_mats/{name}/'):
                     os.makedirs(f'./results/pvalue_mats/{name}/')
-                np.save(
-                    f"./results/pvalue_mats/{name}/{name}_{save_name}_pvalues_params={params_index}_rep={rep}.npy",
-                    mch.pvalues_,
-                )
+                if hasattr(mch, 'pvalues_'):
+                    np.save(
+                        f"./results/pvalue_mats/{name}/{name}_{save_name}_pvalues_params={params_index}_rep={rep}.npy",
+                        mch.pvalues_,
+                    )
 
         return results
 

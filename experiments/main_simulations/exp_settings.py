@@ -1,4 +1,4 @@
-from sparse_shift.methods import MinChange
+from sparse_shift.methods import MinChange, AugmentedPC
 
 PARAMS_DICT = {
     "DEBUG": [{
@@ -217,13 +217,23 @@ ALL_METHODS = [
             'test_kwargs': {},
         }
     ),
+    (
+        'full_pc_kci',
+        'Full PC (KCI)',
+        AugmentedPC,
+        {
+            'alpha': 0.05,
+            'test': 'kci',
+            'test_kwargs': {},
+        }
+    ),
 ]
 
 METHODS_DICT = {
-    "DEBUG": ALL_METHODS[:1],
-    "pairwise_power": ALL_METHODS,
+    "DEBUG": ALL_METHODS,
+    "pairwise_power": ALL_METHODS[-1:],
     "environment_convergence": ALL_METHODS,
-    "soft_samples": ALL_METHODS[:2],
+    "soft_samples": ALL_METHODS,
     "oracle_rates": [],
     "oracle_select_rates": [],
     "bivariate_power": [

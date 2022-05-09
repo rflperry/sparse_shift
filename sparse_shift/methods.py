@@ -152,7 +152,7 @@ class MinChange:
                 print(e)
                 self.pvalues_[:, :, -1, env] = 1
                 self.pvalues_[:, :, env, -1] = 1
-            
+
 
         self.n_envs_ += 1
         self.Xs_.append(X)
@@ -174,18 +174,39 @@ class MinChange:
         else:
             min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
         return self.dags_[min_idx]
-    
+
     def get_min_cpdag(self, soft=False):
         min_dags = self.get_min_dags(soft=soft)
         cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
         return cpdag
 
 
+def _construct_augmented_cpdag(cpdag):
+    from sparse_shift.utils import create_causal_learn_cpdag
+    from sparse_shift.causal_learn.GraphClass import CausalGraph
+    from causallearn.graph.GraphNode import GraphNode
+    from causallearn.graph.Edge import Edge
+    from causallearn.graph.Endpoint import Endpoint
+
+    n_x_vars = cpdag.shape[0]
+    cl_cpdag = create_causal_learn_cpdag(cpdag)
+    cl_cpdag.add_node(GraphNode(f'X{n_x_vars+1}'))
+
+    nodes = cl_cpdag.get_nodes()
+
+    for i in range(n_x_vars):
+        cl_cpdag.add_edge(Edge(nodes[i], nodes[-1], Endpoint.ARROW, Endpoint.TAIL))
+
+    cg = CausalGraph(G=cl_cpdag)
+
+    return cg
+
+
 class AugmentedPC:
     """
     Runs the PC algorithm on an augmented graph, starting from a known MEC (optional).
     """
-    def __init__(self, cpdag, test='kci', alpha=0.05, test_kwargs={}):
+    def __init__(self, cpdag, test='kci', alpha=0.05, test_kwargs={}, verbose=False):
         self.cpdag = cpdag
         self.test = test
         self.alpha = alpha
@@ -195,68 +216,58 @@ class AugmentedPC:
         self.alpha_ = alpha
         self.n_envs_ = 0
         self.n_dags_ = self.dags_.shape[0]
+        self.aug_cpdag_ = _construct_augmented_cpdag(cpdag)
         self.Xs_ = []
+        self.verbose = verbose
 
     def add_environment(self, X):
-        X = np.asarray(X)
-        if self.n_envs_ == 0:
-            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
-        else:
-            old_changes = self.pvalues_.copy()
-            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
-            self.pvalues_[:, :] = old_changes
-        
-        self.Xs_.append(X)
+        self.Xs_.append(np.asarray(X))
+
+        if len(self.Xs_) == 1:
+            self.learned_cpdag_ = self.cpdag
+            return
+
+        data = np.block([
+            [self.Xs_[e], np.reshape([e] * self.Xs_[e].shape[0], (-1, 1))]
+            for e in range(len(self.Xs_))
+        ])
+
         if self.test == 'fisherz':
-            # Test X \indep E | PA_X
-            data = np.block([
-                [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
-                [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
-            ])
-            condition_set = tuple(np.where(parents > 0)[0] + 1)
-            pvalue = fisherz(data, 0, m+1, condition_set)
+            from causallearn.utils.cit import fisherz
+            test_func = fisherz
         elif self.test == 'kci':
-            # Test X \indep E | PA_X
-            data = np.block([
-                [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
-                [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
-            ])
-            condition_set = tuple(np.where(parents > 0)[0] + 1)
-            pvalue = kci(data, 0, m+1, condition_set)
+            from causallearn.utils.cit import kci
+            test_func = kci
         else:
-            raise ValueError(f'Test {test} not implemented.')
+            raise ValueError(f'Test {self.test} not implemented.')
 
-            pvalues = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
-                Xs=[prior_X, X],
-                dags=self.dags_,
-                test=self.test,
-                test_kwargs=self.test_kwargs)
-            self.pvalues_[:, :, -1, env] = pvalues[:, :, 0, 1]
-            self.pvalues_[:, :, env, -1] = pvalues[:, :, 0, 1]
-            
 
-        self.n_envs_ += 1
-        self.Xs_.append(X)
+        # Run meek rules on found edges
+        from sparse_shift.causal_learn.SkeletonDiscovery import augmented_skeleton_discovery
+        cg_skel_disc = augmented_skeleton_discovery(data, self.alpha_, test_func,
+            stable=True,
+            background_knowledge=None, verbose=self.verbose,
+            show_progress=self.verbose, cg=self.aug_cpdag_)
 
-    @property
-    def n_dag_changes_(self):
-        return np.sum(self.pvalues_ <= self.alpha_, axis=(1, 2, 3)) / 2
+        from causallearn.utils.PCUtils import Meek
+        cg_meek = Meek.meek(cg_skel_disc, background_knowledge=None)
 
-    @property
-    def soft_scores_(self):
-        scores = np.sum(1 - self.pvalues_, axis=(1, 2, 3))
+        adj = np.zeros(cg_meek.G.graph.shape)
+        adj[cg_meek.G.graph > 0] = 1
+        adj[np.abs(cg_meek.G.graph + cg_meek.G.graph.T) > 0] = 1
 
-        return scores
+        self.learned_cpdag_ = adj[:-1, :-1]
 
-    def get_min_dags(self, soft=False):
-        if soft:
-            scores = self.soft_scores_
-            min_idx = np.where(scores == np.min(scores))[0]
-        else:
-            min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
-        return self.dags_[min_idx]
-    
-    def get_min_cpdag(self, soft=False):
-        min_dags = self.get_min_dags(soft=soft)
-        cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
-        return cpdag
+    def get_min_dags(self, soft=None):
+        """For experiment compliance"""
+        return self.get_dags()
+
+    def get_min_cpdag(self, soft=None):
+        """For experiment compliance"""
+        return self.get_cpdag()
+
+    def get_dags(self, soft=None):
+        return cpdag2dags(self.get_cpdag())
+
+    def get_cpdag(self, soft=None):
+        return self.learned_cpdag_
