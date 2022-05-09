@@ -1,0 +1,351 @@
+2022-05-03 17:20:54,357:INFO:NEW RUN:
+2022-05-03 17:20:54,357:INFO:Args: Namespace(experiment='soft_samples', jobs=-2)
+2022-05-03 17:20:54,357:INFO:Experimental settings:
+2022-05-03 17:20:54,357:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5, 6], 'intervention_targets': [None], 'sample_size': [50, 100, 200, 300, 500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-03 17:20:54,358:INFO:1 total parameter dictionaries
+2022-05-03 17:20:54,358:INFO:30 total parameter combinations
+2022-05-03 17:20:54,358:INFO:Params 0 / 30
+2022-05-03 17:21:13,073:INFO:NEW RUN:
+2022-05-03 17:21:13,073:INFO:Args: Namespace(experiment='soft_samples', jobs=-2)
+2022-05-03 17:21:13,073:INFO:Experimental settings:
+2022-05-03 17:21:13,073:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5, 6], 'intervention_targets': [None], 'sample_size': [50, 100, 200, 300, 500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-03 17:21:13,073:INFO:1 total parameter dictionaries
+2022-05-03 17:21:13,073:INFO:30 total parameter combinations
+2022-05-03 17:21:13,073:INFO:Params 0 / 30
+2022-05-03 17:21:38,510:INFO:Params 1 / 30
+2022-05-03 17:21:47,197:INFO:Params 2 / 30
+2022-05-03 17:22:19,682:INFO:Params 3 / 30
+2022-05-03 17:23:45,642:INFO:Params 4 / 30
+2022-05-03 17:29:29,131:INFO:Params 5 / 30
+2022-05-03 17:29:31,709:INFO:Params 6 / 30
+2022-05-03 17:29:39,942:INFO:Params 7 / 30
+2022-05-03 17:30:13,430:INFO:Params 8 / 30
+2022-05-03 17:31:34,442:INFO:Params 9 / 30
+2022-05-03 17:37:19,810:INFO:Params 10 / 30
+2022-05-03 17:37:22,352:INFO:Params 11 / 30
+2022-05-03 17:37:30,914:INFO:Params 12 / 30
+2022-05-03 17:38:03,804:INFO:Params 13 / 30
+2022-05-03 17:39:26,253:INFO:Params 14 / 30
+2022-05-03 17:45:10,041:INFO:Params 15 / 30
+2022-05-03 17:45:12,875:INFO:Params 16 / 30
+2022-05-03 17:45:21,945:INFO:Params 17 / 30
+2022-05-03 17:45:54,075:INFO:Params 18 / 30
+2022-05-03 17:47:16,334:INFO:Params 19 / 30
+2022-05-03 17:52:58,053:INFO:Params 20 / 30
+2022-05-03 17:53:00,607:INFO:Params 21 / 30
+2022-05-03 17:53:09,062:INFO:Params 22 / 30
+2022-05-03 17:53:40,636:INFO:Params 23 / 30
+2022-05-03 17:55:00,744:INFO:Params 24 / 30
+2022-05-03 18:00:47,904:INFO:Params 25 / 30
+2022-05-03 18:00:50,504:INFO:Params 26 / 30
+2022-05-03 18:00:58,917:INFO:Params 27 / 30
+2022-05-03 18:01:30,928:INFO:Params 28 / 30
+2022-05-03 18:02:52,315:INFO:Params 29 / 30
+2022-05-04 03:34:27,666:INFO:NEW RUN:
+2022-05-04 03:34:27,666:INFO:Args: Namespace(experiment='soft_samples', jobs=None)
+2022-05-04 03:34:27,666:INFO:Experimental settings:
+2022-05-04 03:34:27,666:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 5, 6], 'intervention_targets': [None], 'sample_size': [50, 100], 'dag_density': [0.3], 'reps': [10], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-04 03:34:27,666:INFO:1 total parameter dictionaries
+2022-05-04 03:34:27,666:INFO:6 total parameter combinations
+2022-05-04 03:34:27,666:INFO:Params 0 / 6
+2022-05-04 04:19:42,297:INFO:NEW RUN:
+2022-05-04 04:19:42,297:INFO:Args: Namespace(experiment='environment_convergence', jobs=-2)
+2022-05-04 04:19:42,297:INFO:Experimental settings:
+2022-05-04 04:19:42,297:INFO:[{'n_variables': [6], 'n_total_environments': [10], 'sparsity': [1, 2, 4], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-04 04:19:42,298:INFO:1 total parameter dictionaries
+2022-05-04 04:19:42,298:INFO:3 total parameter combinations
+2022-05-04 04:19:42,298:INFO:Params 0 / 3
+2022-05-04 04:20:01,204:INFO:NEW RUN:
+2022-05-04 04:20:01,204:INFO:Args: Namespace(experiment='environment_convergence', jobs=-2)
+2022-05-04 04:20:01,204:INFO:Experimental settings:
+2022-05-04 04:20:01,204:INFO:[{'n_variables': [6], 'n_total_environments': [10], 'sparsity': [1, 2, 4], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-04 04:20:01,205:INFO:1 total parameter dictionaries
+2022-05-04 04:20:01,205:INFO:3 total parameter combinations
+2022-05-04 04:20:01,205:INFO:Params 0 / 3
+2022-05-04 04:50:22,981:INFO:Params 1 / 3
+2022-05-04 05:20:39,999:INFO:Params 2 / 3
+2022-05-06 14:55:39,024:INFO:NEW RUN:
+2022-05-06 14:55:39,024:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-06 14:55:39,024:INFO:Experimental settings:
+2022-05-06 14:55:39,024:INFO:[{'n_variables': [6], 'n_total_environments': [2], 'sparsity': [3, 4, 1, 6], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 14:55:39,024:INFO:1 total parameter dictionaries
+2022-05-06 14:55:39,024:INFO:4 total parameter combinations
+2022-05-06 14:55:39,024:INFO:Params 0 / 4
+2022-05-06 14:56:23,843:INFO:Params 1 / 4
+2022-05-06 14:57:08,027:INFO:Params 2 / 4
+2022-05-06 14:57:51,548:INFO:Params 3 / 4
+2022-05-06 15:06:52,582:INFO:NEW RUN:
+2022-05-06 15:06:52,582:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-06 15:06:52,582:INFO:Experimental settings:
+2022-05-06 15:06:52,582:INFO:[{'n_variables': [2], 'n_total_environments': [2], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [4], 'n_total_environments': [2], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [2], 'sparsity': [4], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [16], 'n_total_environments': [2], 'sparsity': [8], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 15:06:52,583:INFO:4 total parameter dictionaries
+2022-05-06 15:06:52,583:INFO:1 total parameter combinations
+2022-05-06 15:06:52,583:INFO:Params 0 / 1
+2022-05-06 15:07:03,105:INFO:1 total parameter combinations
+2022-05-06 15:07:03,106:INFO:Params 0 / 1
+2022-05-06 15:07:34,791:INFO:1 total parameter combinations
+2022-05-06 15:07:34,791:INFO:Params 0 / 1
+2022-05-06 15:08:27,801:INFO:1 total parameter combinations
+2022-05-06 15:08:27,801:INFO:Params 0 / 1
+2022-05-06 15:11:11,320:INFO:NEW RUN:
+2022-05-06 15:11:11,320:INFO:Args: Namespace(experiment='pairwise_power', jobs=None)
+2022-05-06 15:11:11,320:INFO:Experimental settings:
+2022-05-06 15:11:11,320:INFO:[{'n_variables': [16], 'n_total_environments': [2], 'sparsity': [8], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 15:11:11,320:INFO:1 total parameter dictionaries
+2022-05-06 15:11:11,320:INFO:1 total parameter combinations
+2022-05-06 15:11:11,320:INFO:Params 0 / 1
+2022-05-06 15:40:15,622:INFO:NEW RUN:
+2022-05-06 15:40:15,622:INFO:Args: Namespace(experiment='pairwise_power', jobs=None)
+2022-05-06 15:40:15,622:INFO:Experimental settings:
+2022-05-06 15:40:15,622:INFO:[{'n_variables': [2], 'n_total_environments': [2], 'sparsity': [None], 'intervention_targets': [[[1], [0]], [[1], [1]], [[0], [0]], [[0], [1]]], 'sample_size': [500], 'dag_density': [0.3], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 15:40:15,623:INFO:1 total parameter dictionaries
+2022-05-06 15:40:15,623:INFO:4 total parameter combinations
+2022-05-06 15:40:15,623:INFO:Params 0 / 4
+2022-05-06 15:40:22,006:INFO:Params 1 / 4
+2022-05-06 15:40:26,826:INFO:Params 2 / 4
+2022-05-06 15:40:31,256:INFO:Params 3 / 4
+2022-05-06 15:57:41,228:INFO:NEW RUN:
+2022-05-06 15:57:41,228:INFO:Args: Namespace(experiment='oracle_select_rates', jobs=-2)
+2022-05-06 15:57:41,228:INFO:Experimental settings:
+2022-05-06 15:57:41,228:INFO:[{'n_variables': [6, 8, 10, 12], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5, 6, 7], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [2, 3, 4, 5, 7, 10, 15], 'sparsity': [4], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [4], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3, 0.5, 0.7, 0.9, 0.1], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}]
+2022-05-06 15:57:41,228:INFO:4 total parameter dictionaries
+2022-05-06 15:57:41,228:INFO:8 total parameter combinations
+2022-05-06 15:57:41,228:INFO:Params 0 / 8
+2022-05-06 15:58:51,894:INFO:NEW RUN:
+2022-05-06 15:58:51,894:INFO:Args: Namespace(experiment='oracle_select_rates', jobs=-2)
+2022-05-06 15:58:51,894:INFO:Experimental settings:
+2022-05-06 15:58:51,894:INFO:[{'n_variables': [6, 8, 10, 12], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5, 6, 7], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [2, 3, 4, 5, 7, 10, 15], 'sparsity': [4], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [4], 'intervention_targets': [None], 'sample_size': [None], 'dag_density': [0.3, 0.5, 0.7, 0.9, 0.1], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er', 'ba']}]
+2022-05-06 15:58:51,895:INFO:4 total parameter dictionaries
+2022-05-06 15:58:51,895:INFO:8 total parameter combinations
+2022-05-06 15:58:51,895:INFO:Params 0 / 8
+2022-05-06 15:58:54,181:INFO:Params 1 / 8
+2022-05-06 15:58:56,646:INFO:Params 2 / 8
+2022-05-06 15:58:58,537:INFO:Params 3 / 8
+2022-05-06 15:58:58,615:INFO:Params 4 / 8
+2022-05-06 15:58:58,715:INFO:Params 5 / 8
+2022-05-06 15:58:58,791:INFO:Params 6 / 8
+2022-05-06 15:58:58,873:INFO:Params 7 / 8
+2022-05-06 15:58:58,960:INFO:14 total parameter combinations
+2022-05-06 15:58:58,961:INFO:Params 0 / 14
+2022-05-06 15:58:59,036:INFO:Params 1 / 14
+2022-05-06 15:58:59,123:INFO:Params 2 / 14
+2022-05-06 15:58:59,206:INFO:Params 3 / 14
+2022-05-06 15:58:59,282:INFO:Params 4 / 14
+2022-05-06 15:58:59,369:INFO:Params 5 / 14
+2022-05-06 15:58:59,446:INFO:Params 6 / 14
+2022-05-06 15:58:59,521:INFO:Params 7 / 14
+2022-05-06 15:58:59,605:INFO:Params 8 / 14
+2022-05-06 15:58:59,689:INFO:Params 9 / 14
+2022-05-06 15:58:59,779:INFO:Params 10 / 14
+2022-05-06 15:58:59,871:INFO:Params 11 / 14
+2022-05-06 15:58:59,954:INFO:Params 12 / 14
+2022-05-06 15:59:00,057:INFO:Params 13 / 14
+2022-05-06 15:59:00,143:INFO:14 total parameter combinations
+2022-05-06 15:59:00,143:INFO:Params 0 / 14
+2022-05-06 15:59:00,220:INFO:Params 1 / 14
+2022-05-06 15:59:00,295:INFO:Params 2 / 14
+2022-05-06 15:59:00,372:INFO:Params 3 / 14
+2022-05-06 15:59:00,452:INFO:Params 4 / 14
+2022-05-06 15:59:00,533:INFO:Params 5 / 14
+2022-05-06 15:59:00,621:INFO:Params 6 / 14
+2022-05-06 15:59:00,717:INFO:Params 7 / 14
+2022-05-06 15:59:00,808:INFO:Params 8 / 14
+2022-05-06 15:59:00,911:INFO:Params 9 / 14
+2022-05-06 15:59:01,010:INFO:Params 10 / 14
+2022-05-06 15:59:01,148:INFO:Params 11 / 14
+2022-05-06 15:59:01,254:INFO:Params 12 / 14
+2022-05-06 15:59:01,432:INFO:Params 13 / 14
+2022-05-06 15:59:01,625:INFO:10 total parameter combinations
+2022-05-06 15:59:01,625:INFO:Params 0 / 10
+2022-05-06 15:59:01,730:INFO:Params 1 / 10
+2022-05-06 15:59:01,836:INFO:Params 2 / 10
+2022-05-06 15:59:01,944:INFO:Params 3 / 10
+2022-05-06 15:59:02,058:INFO:Params 4 / 10
+2022-05-06 15:59:02,315:INFO:Params 5 / 10
+2022-05-06 15:59:02,415:INFO:Params 6 / 10
+2022-05-06 15:59:50,851:INFO:Params 7 / 10
+2022-05-06 15:59:50,996:INFO:Params 8 / 10
+2022-05-06 15:59:51,100:INFO:Params 9 / 10
+2022-05-06 16:33:11,189:INFO:NEW RUN:
+2022-05-06 16:33:11,190:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-06 16:33:11,190:INFO:Experimental settings:
+2022-05-06 16:33:11,190:INFO:[{'n_variables': [4, 6, 8, 10, 12], 'n_total_environments': [2], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [3], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [20], 'data_simulator': [None], 'dag_simulator': ['er']}]
+2022-05-06 16:33:11,190:INFO:3 total parameter dictionaries
+2022-05-06 16:33:11,190:INFO:5 total parameter combinations
+2022-05-06 16:33:11,190:INFO:Params 0 / 5
+2022-05-06 16:33:13,570:INFO:Params 1 / 5
+2022-05-06 16:33:15,981:INFO:Params 2 / 5
+2022-05-06 16:33:17,821:INFO:Params 3 / 5
+2022-05-06 16:33:17,903:INFO:Params 4 / 5
+2022-05-06 16:33:17,971:INFO:5 total parameter combinations
+2022-05-06 16:33:17,971:INFO:Params 0 / 5
+2022-05-06 16:33:18,032:INFO:Params 1 / 5
+2022-05-06 16:33:18,096:INFO:Params 2 / 5
+2022-05-06 16:33:18,173:INFO:Params 3 / 5
+2022-05-06 16:33:18,249:INFO:Params 4 / 5
+2022-05-06 16:33:18,324:INFO:4 total parameter combinations
+2022-05-06 16:33:18,324:INFO:Params 0 / 4
+2022-05-06 16:33:18,395:INFO:Params 1 / 4
+2022-05-06 16:33:18,493:INFO:Params 2 / 4
+2022-05-06 16:33:18,621:INFO:Params 3 / 4
+2022-05-06 16:34:56,489:INFO:NEW RUN:
+2022-05-06 16:34:56,489:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-06 16:34:56,489:INFO:Experimental settings:
+2022-05-06 16:34:56,489:INFO:[{'n_variables': [4, 6, 8, 10, 12], 'n_total_environments': [2], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [3], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 16:34:56,490:INFO:3 total parameter dictionaries
+2022-05-06 16:34:56,490:INFO:5 total parameter combinations
+2022-05-06 16:34:56,490:INFO:Params 0 / 5
+2022-05-06 16:35:26,710:INFO:Params 1 / 5
+2022-05-06 16:36:10,955:INFO:Params 2 / 5
+2022-05-06 16:37:03,261:INFO:Params 3 / 5
+2022-05-06 16:38:11,133:INFO:Params 4 / 5
+2022-05-06 16:39:19,709:INFO:5 total parameter combinations
+2022-05-06 16:39:19,709:INFO:Params 0 / 5
+2022-05-06 16:40:02,558:INFO:Params 1 / 5
+2022-05-06 16:40:45,122:INFO:Params 2 / 5
+2022-05-06 16:41:27,197:INFO:Params 3 / 5
+2022-05-06 16:42:08,651:INFO:Params 4 / 5
+2022-05-06 16:42:50,937:INFO:4 total parameter combinations
+2022-05-06 16:42:50,937:INFO:Params 0 / 4
+2022-05-06 16:43:32,802:INFO:Params 1 / 4
+2022-05-06 16:45:15,776:INFO:Params 2 / 4
+2022-05-06 16:48:25,421:INFO:Params 3 / 4
+2022-05-06 17:38:21,770:INFO:NEW RUN:
+2022-05-06 17:38:21,770:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-06 17:38:21,770:INFO:Experimental settings:
+2022-05-06 17:38:21,770:INFO:[{'n_variables': [6, 8, 10, 12], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [1, 3, 5, 7], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-06 17:38:21,770:INFO:3 total parameter dictionaries
+2022-05-06 17:38:21,770:INFO:4 total parameter combinations
+2022-05-06 17:38:21,770:INFO:Params 0 / 4
+2022-05-06 17:45:07,264:INFO:Params 1 / 4
+2022-05-06 17:53:40,358:INFO:Params 2 / 4
+2022-05-06 18:04:32,872:INFO:Params 3 / 4
+2022-05-07 03:51:55,712:INFO:NEW RUN:
+2022-05-07 03:51:55,712:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 03:51:55,712:INFO:Experimental settings:
+2022-05-07 03:51:55,712:INFO:[{'n_variables': [6, 8, 10, 12], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [1, 3, 5, 7], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [5], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 03:51:55,713:INFO:3 total parameter dictionaries
+2022-05-07 03:51:55,713:INFO:4 total parameter combinations
+2022-05-07 03:51:55,713:INFO:Params 0 / 4
+2022-05-07 03:53:51,917:INFO:Params 1 / 4
+2022-05-07 03:57:11,572:INFO:Params 2 / 4
+2022-05-07 03:58:43,894:INFO:NEW RUN:
+2022-05-07 03:58:43,895:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 03:58:43,895:INFO:Experimental settings:
+2022-05-07 03:58:43,895:INFO:[{'n_variables': [6, 8, 10, 12], 'n_total_environments': [2], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [2], 'sparsity': [1, 3, 5, 7], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [8], 'n_total_environments': [2], 'sparsity': [0.5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [1], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 03:58:43,895:INFO:3 total parameter dictionaries
+2022-05-07 03:58:43,895:INFO:4 total parameter combinations
+2022-05-07 03:58:43,895:INFO:Params 0 / 4
+2022-05-07 03:58:57,707:INFO:Params 1 / 4
+2022-05-07 03:59:19,561:INFO:Params 2 / 4
+2022-05-07 03:59:50,542:INFO:Params 3 / 4
+2022-05-07 04:00:15,940:INFO:4 total parameter combinations
+2022-05-07 04:00:15,940:INFO:Params 0 / 4
+2022-05-07 04:00:37,743:INFO:Params 1 / 4
+2022-05-07 04:00:59,456:INFO:Params 2 / 4
+2022-05-07 04:01:21,111:INFO:Params 3 / 4
+2022-05-07 04:17:18,578:INFO:NEW RUN:
+2022-05-07 04:17:18,578:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 04:17:18,578:INFO:Experimental settings:
+2022-05-07 04:17:18,578:INFO:[{'n_variables': [3, 6, 9, 12], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 04:17:18,579:INFO:3 total parameter dictionaries
+2022-05-07 04:17:18,579:INFO:4 total parameter combinations
+2022-05-07 04:17:18,579:INFO:Params 0 / 4
+2022-05-07 04:18:04,412:INFO:Params 1 / 4
+2022-05-07 04:19:27,158:INFO:Params 2 / 4
+2022-05-07 04:21:44,889:INFO:Params 3 / 4
+2022-05-07 04:24:22,698:INFO:5 total parameter combinations
+2022-05-07 04:24:22,698:INFO:Params 0 / 5
+2022-05-07 04:25:49,664:INFO:Params 1 / 5
+2022-05-07 04:27:13,327:INFO:Params 2 / 5
+2022-05-07 04:28:39,786:INFO:Params 3 / 5
+2022-05-07 04:30:02,719:INFO:Params 4 / 5
+2022-05-07 04:31:23,825:INFO:4 total parameter combinations
+2022-05-07 04:31:23,825:INFO:Params 0 / 4
+2022-05-07 04:32:48,564:INFO:Params 1 / 4
+2022-05-07 04:35:19,538:INFO:Params 2 / 4
+2022-05-07 04:39:38,100:INFO:Params 3 / 4
+2022-05-07 05:15:09,052:INFO:NEW RUN:
+2022-05-07 05:15:09,052:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 05:15:09,052:INFO:Experimental settings:
+2022-05-07 05:15:09,052:INFO:[{'n_variables': [6], 'n_total_environments': [2], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3, 0.5, 0.7, 0.9], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 05:15:09,052:INFO:3 total parameter dictionaries
+2022-05-07 05:15:09,052:INFO:5 total parameter combinations
+2022-05-07 05:15:09,052:INFO:Params 0 / 5
+2022-05-07 05:15:16,886:INFO:Params 1 / 5
+2022-05-07 05:15:22,696:INFO:Params 2 / 5
+2022-05-07 05:15:26,648:INFO:Params 3 / 5
+2022-05-07 05:15:30,811:INFO:Params 4 / 5
+2022-05-07 05:15:34,837:INFO:4 total parameter combinations
+2022-05-07 05:15:34,837:INFO:Params 0 / 4
+2022-05-07 05:15:38,789:INFO:Params 1 / 4
+2022-05-07 05:15:48,620:INFO:Params 2 / 4
+2022-05-07 05:19:21,227:INFO:NEW RUN:
+2022-05-07 05:19:21,227:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 05:19:21,227:INFO:Experimental settings:
+2022-05-07 05:19:21,228:INFO:[{'n_variables': [6], 'n_total_environments': [2], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3, 0.5, 0.7], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [2], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 05:19:21,228:INFO:3 total parameter dictionaries
+2022-05-07 05:19:21,228:INFO:5 total parameter combinations
+2022-05-07 05:19:21,228:INFO:Params 0 / 5
+2022-05-07 05:19:29,200:INFO:Params 1 / 5
+2022-05-07 05:19:34,814:INFO:Params 2 / 5
+2022-05-07 05:19:38,787:INFO:Params 3 / 5
+2022-05-07 05:19:42,722:INFO:Params 4 / 5
+2022-05-07 05:19:46,847:INFO:3 total parameter combinations
+2022-05-07 05:19:46,848:INFO:Params 0 / 3
+2022-05-07 05:19:50,992:INFO:Params 1 / 3
+2022-05-07 05:20:00,845:INFO:Params 2 / 3
+2022-05-07 05:20:20,478:INFO:4 total parameter combinations
+2022-05-07 05:20:20,478:INFO:Params 0 / 4
+2022-05-07 05:20:22,401:INFO:Params 1 / 4
+2022-05-07 05:20:26,438:INFO:Params 2 / 4
+2022-05-07 05:20:32,496:INFO:Params 3 / 4
+2022-05-07 05:20:38,494:INFO:Complete
+2022-05-07 05:29:04,418:INFO:NEW RUN:
+2022-05-07 05:29:04,418:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 05:29:04,418:INFO:Experimental settings:
+2022-05-07 05:29:04,418:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 05:29:04,418:INFO:3 total parameter dictionaries
+2022-05-07 05:29:04,418:INFO:5 total parameter combinations
+2022-05-07 05:29:04,419:INFO:Params 0 / 5
+2022-05-07 05:43:15,987:INFO:Params 1 / 5
+2022-05-07 05:57:13,026:INFO:Params 2 / 5
+2022-05-07 06:11:08,295:INFO:Params 3 / 5
+2022-05-07 11:41:07,227:INFO:NEW RUN:
+2022-05-07 11:41:07,227:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 11:41:07,227:INFO:Experimental settings:
+2022-05-07 11:41:07,227:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 11:41:07,227:INFO:3 total parameter dictionaries
+2022-05-07 11:41:07,227:INFO:2 total parameter combinations
+2022-05-07 11:41:07,227:INFO:Params 0 / 2
+2022-05-07 11:55:12,574:INFO:Params 1 / 2
+2022-05-07 12:09:02,687:INFO:3 total parameter combinations
+2022-05-07 12:09:02,688:INFO:Params 0 / 3
+2022-05-07 12:23:18,324:INFO:Params 1 / 3
+2022-05-07 12:48:20,816:INFO:Params 2 / 3
+2022-05-07 13:30:31,229:INFO:4 total parameter combinations
+2022-05-07 13:30:31,229:INFO:Params 0 / 4
+2022-05-07 13:37:24,498:INFO:Params 1 / 4
+2022-05-07 13:51:12,520:INFO:Params 2 / 4
+2022-05-07 14:14:08,400:INFO:Params 3 / 4
+2022-05-07 14:39:41,446:INFO:Complete
+2022-05-07 15:12:45,616:INFO:NEW RUN:
+2022-05-07 15:12:45,616:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 15:12:45,616:INFO:Experimental settings:
+2022-05-07 15:12:45,616:INFO:[{'n_variables': [6], 'n_total_environments': [15], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 15:12:45,616:INFO:1 total parameter dictionaries
+2022-05-07 15:12:45,616:INFO:1 total parameter combinations
+2022-05-07 15:12:45,616:INFO:Params 0 / 1
+2022-05-07 17:39:15,225:INFO:Complete
+2022-05-07 18:24:39,266:INFO:NEW RUN:
+2022-05-07 18:24:39,266:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-07 18:24:39,266:INFO:Experimental settings:
+2022-05-07 18:24:39,266:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50, 100, 250, 500, 1000], 'dag_density': [0.3], 'reps': [50], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-07 18:24:39,267:INFO:1 total parameter dictionaries
+2022-05-07 18:24:39,267:INFO:5 total parameter combinations
+2022-05-07 18:24:39,267:INFO:Params 0 / 5
+2022-05-07 18:25:13,082:INFO:Params 1 / 5
+2022-05-07 18:25:52,005:INFO:Params 2 / 5
+2022-05-07 18:27:59,591:INFO:Params 3 / 5
+2022-05-07 18:42:12,669:INFO:Params 4 / 5
+2022-05-07 20:27:54,543:INFO:Complete
