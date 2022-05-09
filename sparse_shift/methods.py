@@ -163,15 +163,87 @@ class MinChange:
 
     @property
     def soft_scores_(self):
-        # index i,j = 1 if dag i changes "more" than dag j
-        # rankings = np.zeros((self.n_dags_, self.n_dags_))
-        # for i in range(self.n_dags_):
-        #     for j in range(i+1, self.n_dags_):
-        #         # If more pvals in i are less than in j, then i "changes more"
-        #         changes = np.sign(self.pvalues_[i] - self.pvalues_[j]).sum()
-        #         rankings[i, j] = int(changes < 0)
-        #         rankings[j, i] = int(changes > 0)
+        scores = np.sum(1 - self.pvalues_, axis=(1, 2, 3))
 
+        return scores
+
+    def get_min_dags(self, soft=False):
+        if soft:
+            scores = self.soft_scores_
+            min_idx = np.where(scores == np.min(scores))[0]
+        else:
+            min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
+        return self.dags_[min_idx]
+    
+    def get_min_cpdag(self, soft=False):
+        min_dags = self.get_min_dags(soft=soft)
+        cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
+        return cpdag
+
+
+class AugmentedPC:
+    """
+    Runs the PC algorithm on an augmented graph, starting from a known MEC (optional).
+    """
+    def __init__(self, cpdag, test='kci', alpha=0.05, test_kwargs={}):
+        self.cpdag = cpdag
+        self.test = test
+        self.alpha = alpha
+        self.test_kwargs = test_kwargs
+        self.dags_ = np.asarray(cpdag2dags(cpdag))
+        self.n_vars_ = cpdag.shape[0]
+        self.alpha_ = alpha
+        self.n_envs_ = 0
+        self.n_dags_ = self.dags_.shape[0]
+        self.Xs_ = []
+
+    def add_environment(self, X):
+        X = np.asarray(X)
+        if self.n_envs_ == 0:
+            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
+        else:
+            old_changes = self.pvalues_.copy()
+            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
+            self.pvalues_[:, :] = old_changes
+        
+        self.Xs_.append(X)
+        if self.test == 'fisherz':
+            # Test X \indep E | PA_X
+            data = np.block([
+                [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
+                [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
+            ])
+            condition_set = tuple(np.where(parents > 0)[0] + 1)
+            pvalue = fisherz(data, 0, m+1, condition_set)
+        elif self.test == 'kci':
+            # Test X \indep E | PA_X
+            data = np.block([
+                [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
+                [np.reshape([1] * Xs[e2].shape[0], (-1, 1)), Xs[e2]]
+            ])
+            condition_set = tuple(np.where(parents > 0)[0] + 1)
+            pvalue = kci(data, 0, m+1, condition_set)
+        else:
+            raise ValueError(f'Test {test} not implemented.')
+
+            pvalues = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
+                Xs=[prior_X, X],
+                dags=self.dags_,
+                test=self.test,
+                test_kwargs=self.test_kwargs)
+            self.pvalues_[:, :, -1, env] = pvalues[:, :, 0, 1]
+            self.pvalues_[:, :, env, -1] = pvalues[:, :, 0, 1]
+            
+
+        self.n_envs_ += 1
+        self.Xs_.append(X)
+
+    @property
+    def n_dag_changes_(self):
+        return np.sum(self.pvalues_ <= self.alpha_, axis=(1, 2, 3)) / 2
+
+    @property
+    def soft_scores_(self):
         scores = np.sum(1 - self.pvalues_, axis=(1, 2, 3))
 
         return scores

@@ -27,22 +27,23 @@ def dags2mechanisms(dags):
     return mech_dict
 
 
-# def create_causal_learn_dag(G):
-#     """Converts directed adj matrix G to causal graph"""
-#     from causallearn.graph.Dag import Dag
-#     from causallearn.graph.GraphNode import GraphNode
+def create_causal_learn_dag(G):
+    """Converts directed adj matrix G to causal graph"""
+    from causallearn.graph.Dag import Dag
+    from causallearn.graph.GraphNode import GraphNode
 
-#     n_vars = G.shape[0]
-#     node_names = [("X%d" % (i + 1)) for i in range(n_vars)]
-#     nodes = [GraphNode(name) for name in node_names]
+    n_vars = G.shape[0]
+    node_names = [("X%d" % (i + 1)) for i in range(n_vars)]
+    nodes = [GraphNode(name) for name in node_names]
 
-#     cl_dag = Dag(nodes)
-#     for i in range(n_vars):
-#         for j in range(n_vars):
-#             if G[i, j] != 0:
-#                 cl_dag.add_directed_edge(nodes[i], nodes[j])
+    cl_dag = Dag(nodes)
+    for i in range(n_vars):
+        for j in range(n_vars):
+            if G[i, j] != 0:
+                cl_dag.add_directed_edge(nodes[i], nodes[j])
 
-#     return cl_dag
+    return cl_dag
+
 
 def dag2cpdag(adj, targets=None):
     """Converts an adjacency matrix to the cpdag adjacency matrix, with potential interventions"""
