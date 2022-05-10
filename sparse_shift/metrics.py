@@ -20,7 +20,7 @@ def dag_false_orientations(true_dag, cpdag):
 def dag_precision(true_dag, cpdag):
     tp = len(np.where((true_dag + cpdag - cpdag.T) == 2)[0])
     fp = len(np.where((true_dag + cpdag.T - cpdag) == 2)[0])
-    return tp / (tp + fp) if (tp + fp) > 0 else np.nan
+    return tp / (tp + fp) if (tp + fp) > 0 else 1
 
 
 def dag_recall(true_dag, cpdag):
