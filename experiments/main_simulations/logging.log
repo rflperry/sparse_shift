@@ -592,3 +592,39 @@
 2022-05-12 11:33:06,918:INFO:1 total parameter combinations
 2022-05-12 11:33:06,918:INFO:Params 0 / 1
 2022-05-12 11:33:47,139:INFO:Complete
+2022-05-12 06:38:11,968:INFO:NEW RUN:
+2022-05-12 06:38:11,968:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 06:38:11,968:INFO:Experimental settings:
+2022-05-12 06:38:11,968:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [100], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 06:38:11,968:INFO:1 total parameter dictionaries
+2022-05-12 06:38:11,968:INFO:1 total parameter combinations
+2022-05-12 06:38:11,968:INFO:Params 0 / 1
+2022-05-12 06:41:30,704:INFO:NEW RUN:
+2022-05-12 06:41:30,704:INFO:Args: Namespace(experiment='pairwise_power', jobs=-2)
+2022-05-12 06:41:30,704:INFO:Experimental settings:
+2022-05-12 06:41:30,704:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [300], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [300], 'dag_density': [0.3, 0.5, 0.7], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [300], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50, 100, 300, 500, 1000], 'dag_density': [0.3], 'reps': [10], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [15], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [300], 'dag_density': [0.3], 'reps': [10], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 06:41:30,705:INFO:5 total parameter dictionaries
+2022-05-12 06:41:30,705:INFO:5 total parameter combinations
+2022-05-12 06:41:30,705:INFO:Params 0 / 5
+2022-05-12 06:42:04,059:INFO:Params 1 / 5
+2022-05-12 06:42:37,083:INFO:Params 2 / 5
+2022-05-12 06:43:10,011:INFO:Params 3 / 5
+2022-05-12 06:43:40,770:INFO:Params 4 / 5
+2022-05-12 06:44:11,300:INFO:3 total parameter combinations
+2022-05-12 06:44:11,300:INFO:Params 0 / 3
+2022-05-12 06:44:41,607:INFO:Params 1 / 3
+2022-05-12 06:46:02,860:INFO:Params 2 / 3
+2022-05-12 06:48:41,873:INFO:4 total parameter combinations
+2022-05-12 06:48:41,874:INFO:Params 0 / 4
+2022-05-12 06:48:57,979:INFO:Params 1 / 4
+2022-05-12 06:49:28,331:INFO:Params 2 / 4
+2022-05-12 06:50:17,602:INFO:Params 3 / 4
+2022-05-12 06:51:06,496:INFO:5 total parameter combinations
+2022-05-12 06:51:06,496:INFO:Params 0 / 5
+2022-05-12 06:51:30,130:INFO:Params 1 / 5
+2022-05-12 06:51:54,548:INFO:Params 2 / 5
+2022-05-12 06:52:24,841:INFO:Params 3 / 5
+2022-05-12 06:53:06,773:INFO:Params 4 / 5
+2022-05-12 06:54:38,269:INFO:1 total parameter combinations
+2022-05-12 06:54:38,269:INFO:Params 0 / 1
+2022-05-12 07:00:00,011:INFO:Complete
