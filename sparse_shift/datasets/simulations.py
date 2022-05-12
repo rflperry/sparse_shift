@@ -229,14 +229,17 @@ def sample_nonlinear_icp_sim(
     return X
 
 
-def _cdnod_base_func(X, u, parents, coefs, functions, noise_scale, noise_shift):
+def _cdnod_base_func(X, u, parents, coefs, functions, noise_scale, noise_shift, additive):
     """Helper function for icp simulations"""
     # X shape (m_features, n_samples)
     # X = X * parents[:, np.newaxis]
     X = X[parents != 0]
     # X shape (m_parents, n_samples)
     X = np.asarray([b * f(x) for b, f, x in zip(coefs, functions, X)])
-    return np.sum(X, axis=0) + noise_scale * (u + noise_shift)
+    if additive:
+        return np.sum(X, axis=0) + noise_scale * (u + noise_shift)
+    else:
+        return np.sum(X, axis=0) * np.abs(noise_scale * (u + noise_shift))
 
 
 def sample_cdnod_sim(
@@ -245,7 +248,7 @@ def sample_cdnod_sim(
     functions=[
         np.tanh,
         np.sinc,
-        lambda x: x,
+        lambda x: x ** 2,
         lambda x: x ** 3,
     ],
     intervention_targets=None,
@@ -314,14 +317,24 @@ def sample_cdnod_sim(
         intervention_targets = [intervention_targets]
 
     # If intervention on variable, use domain specific seed. Otherwise shared base seed
+    functions = [
+        base_seed.choice(functions, size=(np.sum(parents)))
+        for i, parents in enumerate(dag.T)
+    ]
+    additives = [
+        True #base_seed.choice([True, False])
+        for i, parents in enumerate(dag.T)
+    ]
+
     base_equations = [
         partial(
             _cdnod_base_func,
             parents=parents,
             coefs=base_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
-            functions=base_seed.choice(functions, size=(np.sum(parents))),
+            functions=functions[i],
             noise_scale=1,
             noise_shift=0,
+            additive=additives[i],
         )
         for i, parents in enumerate(dag.T)
     ]
@@ -331,9 +344,11 @@ def sample_cdnod_sim(
             _cdnod_base_func,
             parents=parents,
             coefs=domain_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
-            functions=domain_seed.choice(functions, size=(np.sum(parents))),
+            functions=functions[i],
+            # functions=domain_seed.choice(functions, size=(np.sum(parents))),
             noise_scale=domain_seed.uniform(1, 3),
             noise_shift=0,
+            additive=additives[i],
         )
         for i, parents in enumerate(dag.T)
     ]

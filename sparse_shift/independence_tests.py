@@ -10,6 +10,7 @@ def invariant_residual_test(
     test="ks",
     method_kwargs={},
     return_model=False,
+    combine_pvalues=True,
 ):
     r"""
     Calulates the 2-sample test statistic.
@@ -31,6 +32,8 @@ def invariant_residual_test(
         Named arguments to pass to the prediction method.
     return_model : boolean, default=False
         If true, returns the fitted model
+    combine_pvalues: bool, default=True
+        If True, returns hte minimum of the corrected pvalues.
 
     Returns
     -------
@@ -90,7 +93,10 @@ def invariant_residual_test(
             residuals[np.asarray(1 - z, dtype=bool)],
         )
         # Correct for multiple tests
-        pval = min(mean_pval * 2, var_pval * 2, 1)
+        if combine_pvalues:
+            pval = min(mean_pval * 2, var_pval * 2, 1)
+        else:
+            pval = (min(mean_pval * 2, 1), min(var_pval * 2, 1))
     elif test == "ks":
         from scipy.stats import kstest
 

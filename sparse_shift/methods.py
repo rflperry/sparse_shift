@@ -209,7 +209,7 @@ class FullMinChanges:
         if self.n_envs_ == 1:
             self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
             return
-        
+
         self.pvalues_ = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
             Xs=self.Xs_,
             dags=self.dags_,
@@ -217,7 +217,6 @@ class FullMinChanges:
             test_kwargs=self.test_kwargs,
             pairwise=False)
 
-        
 
     @property
     def n_dag_changes_(self):
@@ -226,6 +225,77 @@ class FullMinChanges:
     @property
     def soft_scores_(self):
         scores = np.sum(1 - self.pvalues_, axis=(1))
+
+        return scores
+
+    def get_min_dags(self, soft=False):
+        if soft:
+            scores = self.soft_scores_
+            min_idx = np.where(scores == np.min(scores))[0]
+        else:
+            min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
+        return self.dags_[min_idx]
+
+    def get_min_cpdag(self, soft=False):
+        min_dags = self.get_min_dags(soft=soft)
+        cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
+        return cpdag
+
+
+class ParamChanges:
+    """
+    Computes the number of parameter changes in pairwise mechanism changes in all DAGs
+    in a given Markov equivalence class across given environment datasets
+    """
+    def __init__(self, cpdag, test='linear_params', alpha=0.05, scale_alpha=True, test_kwargs={}):
+        self.cpdag = cpdag
+        self.test = test
+        self.alpha = alpha
+        self.scale_alpha = scale_alpha
+        self.test_kwargs = test_kwargs
+        self.dags_ = np.asarray(cpdag2dags(cpdag))
+        self.n_vars_ = cpdag.shape[0]
+        self.alpha_ = alpha
+        if scale_alpha:
+            self.alpha_ /= self.n_vars_  # account for false positive rate within dag
+        self.n_envs_ = 0
+        self.n_dags_ = self.dags_.shape[0]
+        self.Xs_ = []
+
+    def add_environment(self, X):
+        assert self.test
+        X = np.asarray(X)
+        if self.n_envs_ == 0:
+            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_, 1, 1, 2))
+        else:
+            old_changes = self.pvalues_.copy()
+            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_, self.n_envs_+1, self.n_envs_+1, 2))
+            self.pvalues_[:, :, :self.n_envs_, :self.n_envs_, :] = old_changes
+        
+        for env, prior_X in enumerate(self.Xs_):
+            try:
+                pvalues = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
+                    Xs=[prior_X, X],
+                    dags=self.dags_,
+                    test=self.test,
+                    test_kwargs=self.test_kwargs)
+                self.pvalues_[:, :, -1, env, :] = pvalues[:, :, 0, 1, :]
+                self.pvalues_[:, :, env, -1, :] = pvalues[:, :, 0, 1, :]
+            except ValueError as e:
+                print(e)
+                self.pvalues_[:, :, -1, env, :] = 1
+                self.pvalues_[:, :, env, -1, :] = 1
+
+        self.n_envs_ += 1
+        self.Xs_.append(X)
+
+    @property
+    def n_dag_changes_(self):
+        return np.sum(self.pvalues_ <= self.alpha_, axis=(1, 2, 3, 4)) / 2
+
+    @property
+    def soft_scores_(self):
+        scores = np.sum(1 - self.pvalues_, axis=(1, 2, 3, 4))
 
         return scores
 

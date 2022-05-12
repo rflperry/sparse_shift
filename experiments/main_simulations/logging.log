@@ -513,3 +513,82 @@
 2022-05-12 01:50:46,286:INFO:1 total parameter combinations
 2022-05-12 01:50:46,286:INFO:Params 0 / 1
 2022-05-12 01:50:52,968:INFO:Complete
+2022-05-12 10:15:29,206:INFO:NEW RUN:
+2022-05-12 10:15:29,206:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 10:15:29,206:INFO:Experimental settings:
+2022-05-12 10:15:29,206:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50], 'dag_density': [0.3], 'reps': [3], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 10:15:29,207:INFO:1 total parameter dictionaries
+2022-05-12 10:15:29,207:INFO:1 total parameter combinations
+2022-05-12 10:15:29,207:INFO:Params 0 / 1
+2022-05-12 10:15:32,591:INFO:Complete
+2022-05-12 10:54:33,437:INFO:NEW RUN:
+2022-05-12 10:54:33,438:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 10:54:33,438:INFO:Experimental settings:
+2022-05-12 10:54:33,438:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50], 'dag_density': [0.3], 'reps': [3], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 10:54:33,439:INFO:1 total parameter dictionaries
+2022-05-12 10:54:33,439:INFO:1 total parameter combinations
+2022-05-12 10:54:33,439:INFO:Params 0 / 1
+2022-05-12 10:54:37,674:INFO:Complete
+2022-05-12 10:58:31,184:INFO:NEW RUN:
+2022-05-12 10:58:31,185:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 10:58:31,185:INFO:Experimental settings:
+2022-05-12 10:58:31,185:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50], 'dag_density': [0.3], 'reps': [3], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 10:58:31,185:INFO:1 total parameter dictionaries
+2022-05-12 10:58:31,185:INFO:1 total parameter combinations
+2022-05-12 10:58:31,185:INFO:Params 0 / 1
+2022-05-12 10:58:35,276:INFO:Complete
+2022-05-12 11:09:44,021:INFO:NEW RUN:
+2022-05-12 11:09:44,021:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 11:09:44,021:INFO:Experimental settings:
+2022-05-12 11:09:44,021:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50], 'dag_density': [0.3], 'reps': [3], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:09:44,022:INFO:1 total parameter dictionaries
+2022-05-12 11:09:44,022:INFO:1 total parameter combinations
+2022-05-12 11:09:44,022:INFO:Params 0 / 1
+2022-05-12 11:10:07,377:INFO:NEW RUN:
+2022-05-12 11:10:07,377:INFO:Args: Namespace(experiment='DEBUG', jobs=None)
+2022-05-12 11:10:07,377:INFO:Experimental settings:
+2022-05-12 11:10:07,377:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [2], 'intervention_targets': [None], 'sample_size': [50], 'dag_density': [0.3], 'reps': [3], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:10:07,377:INFO:1 total parameter dictionaries
+2022-05-12 11:10:07,377:INFO:1 total parameter combinations
+2022-05-12 11:10:07,377:INFO:Params 0 / 1
+2022-05-12 11:10:11,450:INFO:Complete
+2022-05-12 11:19:08,096:INFO:NEW RUN:
+2022-05-12 11:19:08,097:INFO:Args: Namespace(experiment='DEBUG', jobs=-2)
+2022-05-12 11:19:08,097:INFO:Experimental settings:
+2022-05-12 11:19:08,097:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [200], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:19:08,097:INFO:1 total parameter dictionaries
+2022-05-12 11:19:08,097:INFO:1 total parameter combinations
+2022-05-12 11:19:08,097:INFO:Params 0 / 1
+2022-05-12 11:19:41,563:INFO:Complete
+2022-05-12 11:21:34,709:INFO:NEW RUN:
+2022-05-12 11:21:34,709:INFO:Args: Namespace(experiment='DEBUG', jobs=-2)
+2022-05-12 11:21:34,709:INFO:Experimental settings:
+2022-05-12 11:21:34,709:INFO:[{'n_variables': [3], 'n_total_environments': [5], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [200], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:21:34,709:INFO:1 total parameter dictionaries
+2022-05-12 11:21:34,709:INFO:1 total parameter combinations
+2022-05-12 11:21:34,709:INFO:Params 0 / 1
+2022-05-12 11:24:23,612:INFO:Complete
+2022-05-12 11:26:39,818:INFO:NEW RUN:
+2022-05-12 11:26:39,818:INFO:Args: Namespace(experiment='DEBUG', jobs=-2)
+2022-05-12 11:26:39,818:INFO:Experimental settings:
+2022-05-12 11:26:39,819:INFO:[{'n_variables': [3], 'n_total_environments': [2], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [200], 'dag_density': [0.3], 'reps': [100], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:26:39,819:INFO:1 total parameter dictionaries
+2022-05-12 11:26:39,819:INFO:1 total parameter combinations
+2022-05-12 11:26:39,819:INFO:Params 0 / 1
+2022-05-12 11:27:19,389:INFO:Complete
+2022-05-12 11:29:46,512:INFO:NEW RUN:
+2022-05-12 11:29:46,513:INFO:Args: Namespace(experiment='DEBUG', jobs=-2)
+2022-05-12 11:29:46,513:INFO:Experimental settings:
+2022-05-12 11:29:46,513:INFO:[{'n_variables': [3], 'n_total_environments': [3], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [200], 'dag_density': [0.3], 'reps': [100], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:29:46,513:INFO:1 total parameter dictionaries
+2022-05-12 11:29:46,513:INFO:1 total parameter combinations
+2022-05-12 11:29:46,513:INFO:Params 0 / 1
+2022-05-12 11:31:56,030:INFO:Complete
+2022-05-12 11:33:06,917:INFO:NEW RUN:
+2022-05-12 11:33:06,917:INFO:Args: Namespace(experiment='DEBUG', jobs=-2)
+2022-05-12 11:33:06,917:INFO:Experimental settings:
+2022-05-12 11:33:06,917:INFO:[{'n_variables': [3], 'n_total_environments': [2], 'sparsity': [1], 'intervention_targets': [None], 'sample_size': [200], 'dag_density': [0.3], 'reps': [100], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-12 11:33:06,917:INFO:1 total parameter dictionaries
+2022-05-12 11:33:06,918:INFO:1 total parameter combinations
+2022-05-12 11:33:06,918:INFO:Params 0 / 1
+2022-05-12 11:33:47,139:INFO:Complete

@@ -27,7 +27,7 @@ def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}, pairwise=True):
 
     Returns
     -------
-    np.ndarray, shape (d, m, e, e)
+    np.ndarray
         pvalues for each pairwise test
     """
     E = len(Xs)
@@ -49,7 +49,10 @@ def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}, pairwise=True):
                 pvalues_dict[m][tuple(parents)] = pvalue
 
     if pairwise:
-        dag_pvalues = np.zeros((len(dags), M, E, E))
+        if test == 'linear_params':
+            dag_pvalues = np.zeros((len(dags), M, E, E, 2))
+        else:
+            dag_pvalues = np.zeros((len(dags), M, E, E))
     else:
         dag_pvalues = np.zeros((len(dags), M))
 
@@ -104,8 +107,8 @@ def test_pooled_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
         assert len(Xs) > 1
         # Test X \indep E | PA_X
         data = np.block([
-            [np.reshape([e] * self.Xs_[e].shape[0], (-1, 1)), self.Xs_[e]]
-            for e in range(len(self.Xs_))
+            [np.reshape([e] * Xs[e].shape[0], (-1, 1)), Xs[e]]
+            for e in range(len(Xs))
         ])
         condition_set = tuple(np.where(parents > 0)[0] + 1)
         pvalue = fisherz(data, 0, m+1, condition_set)
@@ -123,12 +126,16 @@ def test_pooled_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
 
     return pvalue
 
+
 def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
     """Tests a mechanism"""
 
     E = len(Xs)
     parents = np.asarray(parents).astype(bool)
-    pvalues = np.ones((E, E))
+    if test == 'linear_params':
+        pvalues = np.ones((E, E, 2))
+    else:
+        pvalues = np.ones((E, E))
 
     for e1 in range(E):
         for e2 in range(e1 + 1, E):
@@ -172,6 +179,15 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                     ])
                     condition_set = tuple(np.where(parents > 0)[0] + 1)
                     pvalue = kci(data, 0, m+1, condition_set)
+                elif test == 'linear_params':
+                    assert len(Xs) == 2
+                    pvalue, *_ = invariant_residual_test(
+                        np.vstack((Xs[e1][:, parents], Xs[e2][:, parents])),
+                        np.concatenate((Xs[e1][:, m], Xs[e2][:, m])),
+                        np.asarray([0] * Xs[e1].shape[0] + [1] * Xs[e2].shape[0]),
+                        combine_pvalues=False,
+                        **test_kwargs
+                    )
                 else:
                     raise ValueError(f'Test {test} not implemented.')
             pvalues[e1, e2] = pvalue

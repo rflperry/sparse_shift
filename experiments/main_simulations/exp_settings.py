@@ -1,29 +1,18 @@
-from sparse_shift.methods import MinChange, AugmentedPC, FullMinChanges
+from sparse_shift.methods import MinChange, AugmentedPC, FullMinChanges, ParamChanges
 
 PARAMS_DICT = {
     "DEBUG": [{
         "n_variables": [3],
         "n_total_environments": [3],
-        "sparsity": [2],
+        "sparsity": [1],
         'intervention_targets': [None],
-        "sample_size": [50],
+        "sample_size": [100],
         "dag_density": [0.3],
-        "reps": [3],
+        "reps": [20],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["er"],
     }],
     "pairwise_power": [
-        # {
-        #     "n_variables": [6],
-        #     "n_total_environments": [15],
-        #     "sparsity": [2],
-        #     'intervention_targets': [None],
-        #     "sample_size": [500],
-        #     "dag_density": [0.3],
-        #     "reps": [1],
-        #     "data_simulator": ['cdnod'],
-        #     "dag_simulator": ["er"],
-        # },
         {
             "n_variables": [6],
             "n_total_environments": [5],
@@ -31,43 +20,54 @@ PARAMS_DICT = {
             'intervention_targets': [None],
             "sample_size": [500],
             "dag_density": [0.3],
+            "reps": [20],
+            "data_simulator": ['cdnod'],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [6],
+            "n_total_environments": [5],
+            "sparsity": [1/3],
+            'intervention_targets': [None],
+            "sample_size": [500],
+            "dag_density": [0.3, 0.5, 0.7],
+            "reps": [20],
+            "data_simulator": ['cdnod'],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [3, 6, 9, 12],
+            "n_total_environments": [5],
+            "sparsity": [1/3],
+            'intervention_targets': [None],
+            "sample_size": [500],
+            "dag_density": [0.3],
+            "reps": [20],
+            "data_simulator": ['cdnod'],
+            "dag_simulator": ["er"],
+        },
+        {
+            "n_variables": [6],
+            "n_total_environments": [5],
+            "sparsity": [2],
+            'intervention_targets': [None],
+            "sample_size": [50, 100, 250, 500, 1000],
+            "dag_density": [0.3],
             "reps": [10],
             "data_simulator": ['cdnod'],
             "dag_simulator": ["er"],
         },
-        # {
-        #     "n_variables": [6],
-        #     "n_total_environments": [5],
-        #     "sparsity": [1/3],
-        #     'intervention_targets': [None],
-        #     "sample_size": [500],
-        #     "dag_density": [0.3, 0.5, 0.7],
-        #     "reps": [1],
-        #     "data_simulator": ['cdnod'],
-        #     "dag_simulator": ["er"],
-        # },
-        # {
-        #     "n_variables": [3, 6, 9, 12],
-        #     "n_total_environments": [5],
-        #     "sparsity": [1/3],
-        #     'intervention_targets': [None],
-        #     "sample_size": [500],
-        #     "dag_density": [0.3],
-        #     "reps": [1],
-        #     "data_simulator": ['cdnod'],
-        #     "dag_simulator": ["er"],
-        # },
-        # {
-        #     "n_variables": [6],
-        #     "n_total_environments": [5],
-        #     "sparsity": [2],
-        #     'intervention_targets': [None],
-        #     "sample_size": [50, 100, 250, 500, 1000],
-        #     "dag_density": [0.3],
-        #     "reps": [1],
-        #     "data_simulator": ['cdnod'],
-        #     "dag_simulator": ["er"],
-        # },
+        {
+            "n_variables": [6],
+            "n_total_environments": [15],
+            "sparsity": [2],
+            'intervention_targets': [None],
+            "sample_size": [500],
+            "dag_density": [0.3],
+            "reps": [10],
+            "data_simulator": ['cdnod'],
+            "dag_simulator": ["er"],
+        },
     ],
     "environment_convergence": [{
         "n_variables": [6],
@@ -223,10 +223,20 @@ ALL_METHODS = [
         FullMinChanges,
         {
             'alpha': 0.05,
+            'scale_alpha': True,
             'test': 'kci',
             'test_kwargs': {},
         }
     ),
+    (
+        'mc',
+        'MC',
+        ParamChanges,
+        {
+            'alpha': 0.05,
+            'scale_alpha': True,
+        }
+    )
 ]
 
 METHODS_DICT = {
