@@ -43,7 +43,8 @@ def average_precision_score(true_dag, pvalues_mat):
     recalls = []
 
     for t in thresholds:
-        n_changes = np.sum(pvalues_mat <= t, axis=(1, 2, 3)) / 2
+        axis = tuple(np.arange(1, pvalues_mat.ndim))
+        n_changes = np.sum(pvalues_mat <= t, axis=axis) / 2
         min_idx = np.where(n_changes == np.min(n_changes))[0]
         cpdag = (np.sum(dags[min_idx], axis=0) > 0).astype(int)
         precisions.append(dag_precision(true_dag, cpdag))

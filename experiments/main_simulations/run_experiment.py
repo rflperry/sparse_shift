@@ -19,7 +19,7 @@ from sparse_shift.datasets import (
 )
 from sparse_shift.plotting import plot_dag
 from sparse_shift.testing import test_mechanism_shifts, test_mechanism
-from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange
+from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange, FullMinChanges
 from sparse_shift.metrics import dag_true_orientations, dag_false_orientations, \
     dag_precision, dag_recall, average_precision_score
 from sparse_shift.utils import dag2cpdag, cpdag2dags
@@ -286,7 +286,6 @@ def run_experimental_setting(
         for save_name, method_name, mch, hyperparams in get_experiment_methods(
             args.experiment
         ):
-
             mch = mch(cpdag=true_cpdag, **hyperparams)
 
             for n_env, X in enumerate(Xs):

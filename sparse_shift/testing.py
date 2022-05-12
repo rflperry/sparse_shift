@@ -10,7 +10,7 @@ from sparse_shift.utils import dags2mechanisms
 from causallearn.utils.cit import fisherz, kci
 
 
-def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}):
+def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}, pairwise=True):
     """
     Tests pairwise mechanism equality across a set of dags
 
@@ -37,12 +37,22 @@ def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}):
     for m, mechanisms in mech_dict.items():
         pvalues_dict[m] = {}
         for parents in mechanisms:
-            pvalues = test_mechanism(
-                Xs, m, parents, test, test_kwargs
-            )
-            pvalues_dict[m][tuple(parents)] = pvalues
+            if pairwise:
+                pvalues = test_mechanism(
+                    Xs, m, parents, test, test_kwargs
+                )
+                pvalues_dict[m][tuple(parents)] = pvalues
+            else:
+                pvalue = test_pooled_mechanism(
+                    Xs, m, parents, test, test_kwargs
+                )
+                pvalues_dict[m][tuple(parents)] = pvalue
 
-    dag_pvalues = np.zeros((len(dags), M, E, E))
+    if pairwise:
+        dag_pvalues = np.zeros((len(dags), M, E, E))
+    else:
+        dag_pvalues = np.zeros((len(dags), M))
+
     for i, dag in enumerate(dags):
         for m, parents in enumerate(dag.T):  # transpose to get parents
             dag_pvalues[i, m] = pvalues_dict[m][tuple(parents)]
@@ -50,7 +60,7 @@ def test_dag_shifts(Xs, dags, test='kci', test_kwargs={}):
     return dag_pvalues
 
 
-def test_mechanism_shifts(Xs, dag, test='kci', test_kwargs={}, alpha=0.05):
+def test_mechanism_shifts(Xs, dag, test='kci', test_kwargs={}, alpha=0.05, pairwise=True):
     """
     Tests pairwise mechanism equality
 
@@ -74,6 +84,7 @@ def test_mechanism_shifts(Xs, dag, test='kci', test_kwargs={}, alpha=0.05):
     E = len(Xs)
     parent_graph = np.asarray(dag).T
     M = parent_graph.shape[0]
+
     pvalues = np.ones((M, E, E))
 
     for m in range(M):
@@ -85,6 +96,32 @@ def test_mechanism_shifts(Xs, dag, test='kci', test_kwargs={}, alpha=0.05):
 
     return num_shifts, pvalues
 
+
+def test_pooled_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
+    parents = np.asarray(parents).astype(bool)
+
+    if test == 'fisherz':
+        assert len(Xs) > 1
+        # Test X \indep E | PA_X
+        data = np.block([
+            [np.reshape([e] * self.Xs_[e].shape[0], (-1, 1)), self.Xs_[e]]
+            for e in range(len(self.Xs_))
+        ])
+        condition_set = tuple(np.where(parents > 0)[0] + 1)
+        pvalue = fisherz(data, 0, m+1, condition_set)
+    elif test == 'kci':
+        assert len(Xs) > 1
+        # Test X \indep E | PA_X
+        data = np.block([
+            [np.reshape([e] * Xs[e].shape[0], (-1, 1)), Xs[e]]
+            for e in range(len(Xs))
+        ])
+        condition_set = tuple(np.where(parents > 0)[0] + 1)
+        pvalue = kci(data, 0, m+1, condition_set)
+    else:
+        raise ValueError(f'Test {test} not implemented.')
+
+    return pvalue
 
 def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
     """Tests a mechanism"""
@@ -102,6 +139,7 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                 )
             else:
                 if test == 'kcd':
+                    assert len(Xs) == 2
                     _, pvalue = KCD(n_jobs=test_kwargs['n_jobs']).test(
                         np.vstack((Xs[e1][:, parents], Xs[e2][:, parents])),
                         np.concatenate((Xs[e1][:, m], Xs[e2][:, m])),
@@ -109,6 +147,7 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                         reps=test_kwargs['n_reps'],
                     )
                 elif test == 'invariant_residuals':
+                    assert len(Xs) == 2
                     pvalue, *_ = invariant_residual_test(
                         np.vstack((Xs[e1][:, parents], Xs[e2][:, parents])),
                         np.concatenate((Xs[e1][:, m], Xs[e2][:, m])),
@@ -116,6 +155,7 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                         **test_kwargs
                     )
                 elif test == 'fisherz':
+                    assert len(Xs) > 1
                     # Test X \indep E | PA_X
                     data = np.block([
                         [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],
@@ -124,6 +164,7 @@ def test_mechanism(Xs, m, parents, test='kci', test_kwargs={}):
                     condition_set = tuple(np.where(parents > 0)[0] + 1)
                     pvalue = fisherz(data, 0, m+1, condition_set)
                 elif test == 'kci':
+                    assert len(Xs) > 1
                     # Test X \indep E | PA_X
                     data = np.block([
                         [np.reshape([0] * Xs[e1].shape[0], (-1, 1)), Xs[e1]],

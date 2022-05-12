@@ -179,6 +179,68 @@ class MinChange:
         min_dags = self.get_min_dags(soft=soft)
         cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
         return cpdag
+        
+
+class FullMinChanges:
+    """
+    Computes the number of  mechanism changes in all DAGs in a given
+    Markov equivalence class across given environment datasets
+    """
+    def __init__(self, cpdag, test='kci', alpha=0.05, scale_alpha=True, test_kwargs={}):
+        self.cpdag = cpdag
+        self.test = test
+        self.alpha = alpha
+        self.scale_alpha = scale_alpha
+        self.test_kwargs = test_kwargs
+        self.dags_ = np.asarray(cpdag2dags(cpdag))
+        self.n_vars_ = cpdag.shape[0]
+        self.alpha_ = alpha
+        if scale_alpha:
+            self.alpha_ /= self.n_vars_  # account for false positive rate within dag
+        self.n_envs_ = 0
+        self.n_dags_ = self.dags_.shape[0]
+        self.Xs_ = []
+
+    def add_environment(self, X):
+        X = np.asarray(X)
+        self.Xs_.append(X)
+        self.n_envs_ += 1
+
+        if self.n_envs_ == 1:
+            self.pvalues_ = np.ones((self.n_dags_, self.n_vars_))
+            return
+        
+        self.pvalues_ = test_dag_shifts(  # shape (n_dags, n_mech, 2, 2)
+            Xs=self.Xs_,
+            dags=self.dags_,
+            test=self.test,
+            test_kwargs=self.test_kwargs,
+            pairwise=False)
+
+        
+
+    @property
+    def n_dag_changes_(self):
+        return np.sum(self.pvalues_ <= self.alpha_, axis=(1))
+
+    @property
+    def soft_scores_(self):
+        scores = np.sum(1 - self.pvalues_, axis=(1))
+
+        return scores
+
+    def get_min_dags(self, soft=False):
+        if soft:
+            scores = self.soft_scores_
+            min_idx = np.where(scores == np.min(scores))[0]
+        else:
+            min_idx = np.where(self.n_dag_changes_ == np.min(self.n_dag_changes_))[0]
+        return self.dags_[min_idx]
+
+    def get_min_cpdag(self, soft=False):
+        min_dags = self.get_min_dags(soft=soft)
+        cpdag = (np.sum(min_dags, axis=0) > 0).astype(int)
+        return cpdag
 
 
 def _construct_augmented_cpdag(cpdag):
