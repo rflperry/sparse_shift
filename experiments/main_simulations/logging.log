@@ -672,3 +672,18 @@
 2022-05-12 19:01:55,392:INFO:1 total parameter combinations
 2022-05-12 19:01:55,392:INFO:Params 0 / 1
 2022-05-12 19:41:44,997:INFO:Complete
+2022-05-13 18:58:05,302:INFO:NEW RUN:
+2022-05-13 18:58:05,302:INFO:Args: Namespace(experiment='pairwise_power', jobs=20)
+2022-05-13 18:58:05,302:INFO:Experimental settings:
+2022-05-13 18:58:05,302:INFO:[{'n_variables': [6], 'n_total_environments': [5], 'sparsity': [1, 2, 3, 4, 5], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3, 0.5, 0.7], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [3, 6, 9, 12], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [5], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [50, 100, 200, 500, 1000], 'dag_density': [0.3], 'reps': [10], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}, {'n_variables': [6], 'n_total_environments': [15], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [10], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-13 18:58:05,302:INFO:5 total parameter dictionaries
+2022-05-13 18:58:05,302:INFO:5 total parameter combinations
+2022-05-13 18:58:05,302:INFO:Params 0 / 5
+2022-05-13 19:17:54,994:INFO:Params 1 / 5
+2022-05-13 19:37:46,131:INFO:Params 2 / 5
+2022-05-13 19:57:47,477:INFO:Params 3 / 5
+2022-05-13 20:17:29,372:INFO:Params 4 / 5
+2022-05-13 20:37:43,850:INFO:3 total parameter combinations
+2022-05-13 20:37:43,850:INFO:Params 0 / 3
+2022-05-13 20:57:40,095:INFO:Params 1 / 3
+2022-05-13 21:42:47,692:INFO:Params 2 / 3
