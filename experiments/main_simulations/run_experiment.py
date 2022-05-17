@@ -342,18 +342,20 @@ def run_experimental_setting(
 
         return results
 
+
+    rep_shift = 10
     if args.jobs is not None:
         results = Parallel(
                 n_jobs=args.jobs,
             )(
-                delayed(_run_rep)(rep, False) for rep in range(reps)
+                delayed(_run_rep)(rep + rep_shift, False) for rep in range(reps)
             )
         for result in np.concatenate(results):
             write_file.write(result)
         write_file.flush()
     else:
         for rep in tqdm(range(reps)):
-            _run_rep(rep, write=True)
+            _run_rep(rep + rep_shift, write=True)
 
 
 if __name__ == "__main__":
