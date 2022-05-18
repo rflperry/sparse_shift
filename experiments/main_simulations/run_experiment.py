@@ -342,8 +342,7 @@ def run_experimental_setting(
 
         return results
 
-
-    rep_shift = 10
+    rep_shift = 0
     if args.jobs is not None:
         results = Parallel(
                 n_jobs=args.jobs,
