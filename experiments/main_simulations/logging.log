@@ -752,3 +752,11 @@
 2022-05-16 19:07:43,831:INFO:Params 4 / 6
 2022-05-16 20:03:46,208:INFO:Params 5 / 6
 2022-05-17 03:33:46,129:INFO:Complete
+2022-05-18 02:40:37,260:INFO:NEW RUN:
+2022-05-18 02:40:37,260:INFO:Args: Namespace(experiment='pairwise_power', jobs=10)
+2022-05-18 02:40:37,260:INFO:Experimental settings:
+2022-05-18 02:40:37,260:INFO:[{'n_variables': [6], 'n_total_environments': [15], 'sparsity': [0.3333333333333333], 'intervention_targets': [None], 'sample_size': [500], 'dag_density': [0.3], 'reps': [20], 'data_simulator': ['cdnod'], 'dag_simulator': ['er']}]
+2022-05-18 02:40:37,260:INFO:1 total parameter dictionaries
+2022-05-18 02:40:37,260:INFO:1 total parameter combinations
+2022-05-18 02:40:37,260:INFO:Params 0 / 1
+2022-05-18 20:50:36,489:INFO:Complete
