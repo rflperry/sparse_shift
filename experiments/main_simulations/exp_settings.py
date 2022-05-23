@@ -92,9 +92,9 @@ PARAMS_DICT = {
         "dag_simulator": ["er"],
     }],
     "oracle_rates": [{
-        "n_variables": [6, 8, 10, 12],
+        "n_variables": [4, 6, 8, 10, 12],
         "n_total_environments": [5],
-        "sparsity": [1, 3, 5, 7, 9, 11],
+        "sparsity": [1/5, 1/3, 1/2, 2/3, 4/5],
         'intervention_targets': [None],
         "sample_size": [None],
         "dag_density": [0.1, 0.3, 0.5, 0.7, 0.9],
@@ -158,9 +158,9 @@ PARAMS_DICT = {
             [[], []],
             [[], [0, 1]],
         ],
-        "sample_size": [200],
+        "sample_size": [500],
         "dag_density": [None],
-        "reps": [20],
+        "reps": [50],
         "data_simulator": ["cdnod"],
         "dag_simulator": ["complete"],
     }]
@@ -246,67 +246,19 @@ METHODS_DICT = {
     "soft_samples": ALL_METHODS,
     "oracle_rates": [],
     "oracle_select_rates": [],
-    "bivariate_power": [
-        (
-            'mch_kci',
-            'KCI',
-            MinChange,
-            {
-                'alpha': 0.05,
-                'scale_alpha': True,
-                'test': 'kci',
-                'test_kwargs': {
-                    "KernelX": "GaussianKernel",
-                    "KernelY": "GaussianKernel",
-                    "KernelZ": "GaussianKernel",
-                },
-            }
-        ),
-        (
-            'mch_lin',
-            'Linear',
-            MinChange,
-            {
-                'alpha': 0.05,
-                'scale_alpha': True,
-                'test': 'invariant_residuals',
-                'test_kwargs': {'method': 'linear', 'test': "whitney_levene"},
-            }
-        ),
-        (
-            'mch_gam',
-            'GAM',
-            MinChange,
-            {
-                'alpha': 0.05,
-                'scale_alpha': True,
-                'test': 'invariant_residuals',
-                'test_kwargs': {'method': 'gam', 'test': "whitney_levene"},
-            }
-        ),
-        (
-            'mch_fisherz',
-            'FisherZ',
-            MinChange,
-            {
-                'alpha': 0.05,
-                'scale_alpha': True,
-                'test': 'fisherz',
-                'test_kwargs': {},
-            }
-        ),
-        (
-            'mch_kcd',
-            'KCD',
-            MinChange,
-            {
-                'alpha': 0.05,
-                'scale_alpha': True,
-                'test': 'fisherz',
-                'test_kwargs': {'n_jobs': -2, 'n_reps': 100},
-            }
-        ),
-    ],
+    "bivariate_power": ALL_METHODS,
+    #     (
+    #         'mch_kcd',
+    #         'KCD',
+    #         MinChange,
+    #         {
+    #             'alpha': 0.05,
+    #             'scale_alpha': True,
+    #             'test': 'fisherz',
+    #             'test_kwargs': {'n_jobs': -2, 'n_reps': 100},
+    #         }
+    #     ),
+    # ],
 }
 
 
