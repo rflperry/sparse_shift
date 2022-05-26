@@ -16,6 +16,7 @@ def plot_dag(
     highlight_nodes=None,
     highlight_edges=None,
     labels=None,
+    node_size=500,
 ):
     if parent_adj:
         adj = adj.T
@@ -64,7 +65,7 @@ def plot_dag(
         G, pos=pos,
         node_color=node_colors,
         ax=ax,
-        node_size=500, alpha=0.5,
+        node_size=node_size, alpha=0.5,
     )
     nx.draw_networkx_labels(G, pos, ax=ax, labels=labeldict)
     nx.draw_networkx_edges(G, pos, edgelist=red_edges, edge_color='r', ax=ax, **edge_options)
@@ -74,4 +75,4 @@ def plot_dag(
     ax.collections[0].set_edgecolor("#000000")
     if title is not None:
         plt.title(title)
-    plt.show()
+    plt.box(False)

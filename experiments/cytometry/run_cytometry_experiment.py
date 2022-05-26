@@ -26,7 +26,7 @@ unoriented_edges = np.sum((true_cpdag + true_cpdag.T) == 2) // 2
 Xs = [
     np.log(
         pd.read_csv(f'../../data/cytometry/dataset_{i}.csv')
-    ) for i in range(1, 11)
+    ) for i in range(1, 10)
 ]
 
 METHODS = [
@@ -54,7 +54,6 @@ mch = mch(cpdag=true_cpdag, **hyperparams)
 results = []
 
 for n_env, X in enumerate(Xs):
-    print(n_env)
     mch.add_environment(X)
 
     min_cpdag = mch.get_min_cpdag(False)
@@ -65,7 +64,6 @@ for n_env, X in enumerate(Xs):
     recall = np.round(dag_recall(true_dag, min_cpdag), 4)
 
     results += [true_orients, false_orients, precision, recall]
-    print(precision, recall)
+    print(n_env, ': ', np.round(precision, 4), ', ', np.round(recall, 4))
 
-
-np.save(f"./results/cytometry_{save_name}_pvaluess.npy", mch.pvalues_)
+    np.save(f"./results/cytometry_{save_name}_pvalues_env={n_env+1}.npy", mch.pvalues_)
