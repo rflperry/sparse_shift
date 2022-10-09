@@ -1,7 +1,6 @@
 numpy
 scikit-learn
 matplotlib
-seaborn
 networkx
 joblib
 causal-learn
