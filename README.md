@@ -2,7 +2,7 @@
 
 Conditional independence tools for causal learning under the sparse mechanism shift hypothesis.
 
-# Local installation
+## Local installation
 
 ```console
 git clone https://github.com/rflperry/sparse_shift.git
@@ -10,56 +10,59 @@ cd sparse_shift
 pip install -e .
 ```
 
-# Package Overview
-- data
-  - cytometry
-    - dataset_NUM.csv [NUM = 1-9]
-- experiments
-  - cytometry
-    - analyze_pvalues.ipynb
-    - run_cytometry_experiment.py
-    - results/
-    - figures/
-- notebooks
-  - figures/
-  - teaser_sparse_oracle_pc.ipynb
-- sparse_shift [code]
+## Running experiments and generating figures
 
-# Quick replication instructions
+First navigate and install necessary packages
 
-## Teaser figure
+```console
+cd experiments
+pip install -r requirements.txt
+```
+
+### Teaser figure
 
 ```console
 cd experiments
 ```
 
-Then open and run `teaser_sparse_oracle_pc.ipynb` in that folder.
+Open and run `teaser_sparse_oracle_pc.ipynb` in that folder for experiments and figures.
 
-## Oracle simulations
-
-```console
-cd experiments/main_simulations
-```
-
-## MSS comparison simulation
+### Simulations
 
 ```console
 cd experiments/main_simulations
 ```
 
-## Other method simulations
+Then run the following commands for bivariate power,
 
 ```console
-cd experiments/main_simulations
+python run_experiment.py --experiment bivariate_power --quick
+python run_experiment.py --experiment bivariate_multiplic_power --quick
 ```
 
+rracle rates,
 
+```console
+python run_experiment.py --experiment oracle_rates --quick
+python run_experiment.py --experiment oracle_select_rates --quick
+```
 
-## Cytometry experiment
+and empirical comparison simulations.
+
+```console
+python run_experiment.py --experiment pairwise_power --quick
+```
+
+Remove `--quick` and add `--n_jobs -2` to run the full paper experiments.
+Note that this can take a long time.
+
+Then open the three `.ipynb` notebooks to generate the figures.
+
+### Cytometry experiment
 
 ```console
 cd experiments/cytometry
 python run_cytometry_experiment.py --quick
 ```
 
-Then open and run `analyze_pvalues.ipynb` in that folder.
+Then open and run `analyze_pvalues.ipynb` to generate the figure.
