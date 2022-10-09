@@ -30,7 +30,6 @@ df = pd.read_csv(f'{RESULTS_DIR}/{EXPERIMENT}_results{tag}.csv', sep=',', engine
 # In[4]:
 
 
-print('NA precisions: ', np.sum(1-df['Precision'].notna()))
 df = df.loc[df['Precision'].notna(), :]
 
 df['Fraction of shifting mechanisms'] = df['sparsity'] / df['n_variables']
