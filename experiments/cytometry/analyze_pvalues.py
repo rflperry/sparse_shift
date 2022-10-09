@@ -101,4 +101,4 @@ plot_dag(
 )
 plt.tight_layout()
 plt.savefig('./figures/learned_dag.pdf')
-
+plt.show()
