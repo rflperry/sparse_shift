@@ -33,21 +33,21 @@ Open and run `teaser_sparse_oracle_pc.ipynb` in that folder for experiments and 
 cd experiments/main_simulations
 ```
 
-Then run the following commands for bivariate power,
+Then run the following commands for bivariate power:
 
 ```console
 python run_experiment.py --experiment bivariate_power --quick
 python run_experiment.py --experiment bivariate_multiplic_power --quick
 ```
 
-rracle rates,
+Oracle rates:
 
 ```console
 python run_experiment.py --experiment oracle_rates --quick
 python run_experiment.py --experiment oracle_select_rates --quick
 ```
 
-and empirical comparison simulations.
+and empirical comparison simulations:
 
 ```console
 python run_experiment.py --experiment pairwise_power --quick
