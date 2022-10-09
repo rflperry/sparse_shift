@@ -1,0 +1,149 @@
+params_index, n_variables, n_total_environments, sparsity, intervention_targets, sample_size, dag_density, reps, data_simulator, dag_simulator, Method, Soft, Number of environments, Rep, Number of possible DAGs, MEC size, MEC total edges, MEC unoriented edges, True orientation rate, False orientation rate, Precision, Recall, Average precision
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 2, 0, 2, 6, 3, 3, 0.6667, 0.0, 1.0, 0.6667, 0.6667
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 2, 0, 2, 6, 3, 3, 0.6667, 0.0, 1.0, 0.6667, 0.6667
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 3, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 3, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 2, 0, 1, 6, 3, 3, 0.3333, 0.6667, 0.3333, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 2, 0, 2, 6, 3, 3, 0.3333, 0.0, 1.0, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 3, 0, 1, 6, 3, 3, 0.3333, 0.6667, 0.3333, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 3, 0, 3, 6, 3, 3, 0.3333, 0.0, 1.0, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 2, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.7778
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 2, 0, 4, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.7778
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 3, 0, 1, 6, 3, 3, 0.6667, 0.3333, 0.6667, 0.6667, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 3, 0, 2, 6, 3, 3, 0.6667, 0.0, 1.0, 0.6667, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 2, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.7778
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 2, 0, 4, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.7778
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 3, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.6667
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 3, 0, 2, 6, 3, 3, 0.3333, 0.3333, 0.5, 0.3333, 0.6667
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 2, 0, 1, 6, 3, 3, 0.3333, 0.6667, 0.3333, 0.3333, 0.3889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 2, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.3889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 3, 0, 1, 6, 3, 3, 0.6667, 0.3333, 0.6667, 0.6667, 0.5
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 3, 0, 2, 6, 3, 3, 0.3333, 0.3333, 0.5, 0.3333, 0.5
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 2, 0, 1, 6, 3, 3, 0.3333, 0.6667, 0.3333, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 2, 0, 2, 6, 3, 3, 0.3333, 0.0, 1.0, 0.3333, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 3, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 3, 0, 2, 6, 3, 3, 0.0, 0.6667, 0.0, 0.0, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 1, 0, 6, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 2, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.8333
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 2, 0, 4, 6, 3, 3, 0.0, 0.0, 1, 0.0, 0.8333
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 3, 0, 1, 6, 3, 3, 1.0, 0.0, 1.0, 1.0, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 3, 0, 1, 6, 3, 3, 0.6667, 0.3333, 0.6667, 0.6667, 0.8889
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 3, 1, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 3, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 2, 1, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 3, 1, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 3, 1, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 3, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 1, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 2, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 2, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 3, 1, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 3, 1, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 2, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 2, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 2, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 3, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 2, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 3, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 2, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 3, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), True, 3, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (FisherZ), False, 3, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 2, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 2, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), True, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (KCI), False, 3, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 1, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 2, 2, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 2, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, True, 3, 2, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, MC, False, 3, 2, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 2, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 2, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Full PC (oracle), False, 3, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (oracle), False, 3, 3, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 2, 3, 1, 2, 1, 1, 1.0, 0.0, 1.0, 1.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 2, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), True, 3, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (KCI), False, 3, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 2, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 2, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), True, 3, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (Linear), False, 3, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 1.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 1, 3, 2, 2, 1, 1, 0.0, 0.0, 1, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), True, 2, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0
+0, 3, 3, 1, None, 100, 0.3, 20, cdnod, er, Min changes (GAM), False, 2, 3, 1, 2, 1, 1, 0.0, 1.0, 0.0, 0.0, 0.0

@@ -233,12 +233,15 @@ def _cdnod_base_func(X, u, parents, coefs, functions, noise_scale, noise_shift, 
     """Helper function for icp simulations"""
     # X shape (m_features, n_samples)
     # X = X * parents[:, np.newaxis]
+    n_samples = X.shape[1]
     X = X[parents != 0]
     # X shape (m_parents, n_samples)
     X = np.asarray([b * f(x) for b, f, x in zip(coefs, functions, X)])
     if additive:
         return np.sum(X, axis=0) + noise_scale * (u + noise_shift)
     else:
+        if sum(parents) == 0:
+            return np.random.normal(0, 1, (n_samples,))
         return np.sum(X, axis=0) * np.abs(noise_scale * (u + noise_shift))
 
 
@@ -322,7 +325,8 @@ def sample_cdnod_sim(
         for i, parents in enumerate(dag.T)
     ]
     additives = [
-        True #base_seed.choice([True, False])
+        False
+        # True #base_seed.choice([True, False])
         for i, parents in enumerate(dag.T)
     ]
 
@@ -330,7 +334,8 @@ def sample_cdnod_sim(
         partial(
             _cdnod_base_func,
             parents=parents,
-            coefs=base_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
+            coefs=[1]*sum(parents),
+            # coefs=base_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=functions[i],
             noise_scale=1,
             noise_shift=0,
@@ -343,10 +348,12 @@ def sample_cdnod_sim(
         partial(
             _cdnod_base_func,
             parents=parents,
-            coefs=domain_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
+            coefs=[1]*sum(parents),
+            # coefs=domain_seed.uniform(0.5, 2.5, size=(np.sum(parents))),
             functions=functions[i],
             # functions=domain_seed.choice(functions, size=(np.sum(parents))),
-            noise_scale=domain_seed.uniform(1, 3),
+            # noise_scale=domain_seed.uniform(1, 3),
+            noise_scale=1,
             noise_shift=0,
             additive=additives[i],
         )
@@ -355,15 +362,19 @@ def sample_cdnod_sim(
 
     base_noises = [base_seed.choice(
         [
-            lambda: np.random.normal(0, 1),
-            lambda: np.random.uniform(-0.5, 0.5),
+            # lambda: np.random.normal(0, 1),
+            # lambda: np.random.uniform(-0.5, 0.5),
+            lambda: 1 / np.random.uniform(1, 3),
+            lambda: np.random.uniform(1, 3),
         ])
         for i in range(m)]
 
     domain_noises = [domain_seed.choice(
         [
-            lambda: np.random.normal(0, 1),
-            lambda: np.random.uniform(-0.5, 0.5),
+            # lambda: np.random.normal(0, 1),
+            # lambda: np.random.uniform(-0.5, 0.5),
+            lambda: 1 / np.random.uniform(1, 3),
+            lambda: np.random.uniform(1, 3),
         ])
         for i in range(m)]
 

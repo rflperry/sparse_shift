@@ -36,6 +36,7 @@ def plot_dag(
         "arrowsize": 20,
         "alpha": 0.5,
         "arrows": True,
+        "node_size": node_size,
     }
 
     labeldict = {}
