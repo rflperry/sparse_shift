@@ -23,7 +23,6 @@ from sparse_shift.methods import FullPC, PairwisePC, MinChangeOracle, MinChange,
 from sparse_shift.metrics import dag_true_orientations, dag_false_orientations, \
     dag_precision, dag_recall, average_precision_score
 from sparse_shift.utils import dag2cpdag, cpdag2dags
-from exp_settings import get_experiments, get_experiment_methods, get_experiment_params, get_param_keys
 
 import os
 import warnings
@@ -93,6 +92,12 @@ def _sample_datasets(data_simulator, sample_size, dag, intervention_targets, see
 
 
 def main(args):
+    # Determine experimental settings
+    if args.quick:
+        from exp_quick_settings import get_experiment_params, get_param_keys
+    else:
+        from exp_settings import get_experiment_params, get_param_key
+
     # Initialize og details
     logging.basicConfig(
         filename="./logging.log",
@@ -114,6 +119,8 @@ def main(args):
             ["True orientation rate", "False orientation rate", "Precision", "Recall", 'Average precision'],
         ]
     )
+    if not os.path.exists('./results/'):
+        os.makedirs('./results/')
     write_file = open(f"./results/{args.experiment}_results.csv", "w+")
     write_file.write(", ".join(header) + "\n")
     write_file.flush()
@@ -156,6 +163,12 @@ def run_experimental_setting(
     data_simulator,
     dag_simulator,
 ):
+
+    # Determine experimental settings
+    if args.quick:
+        from exp_quick_settings import get_experiment_methods
+    else:
+        from exp_settings import get_experiment_methods
 
     name = args.experiment
 
@@ -362,13 +375,18 @@ if __name__ == "__main__":
     parser.add_argument(
         "--experiment",
         help="experiment parameters to run",
-        choices=get_experiments(),
     )
     parser.add_argument(
         "--jobs",
         help="Number of jobs to run in parallel",
         default=None,
         type=int,
+    )
+    parser.add_argument(
+        "--quick",
+        help="Enable to run a smaller, test version",
+        default=False,
+        action='store_true'
     )
     args = parser.parse_args()
 
