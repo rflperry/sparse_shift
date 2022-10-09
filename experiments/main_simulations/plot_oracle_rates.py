@@ -151,7 +151,6 @@ for graph_model in plot_df['dag_simulator'].unique():
         ax.get_legend().remove()
         
     plt.ylim([0.4, 1.03])
-    print(graph_model)
     plt.tight_layout()
     if SAVE_FIGURES:
         plt.savefig(f'./figures/oracle_select_rates_{graph_model}.pdf')
