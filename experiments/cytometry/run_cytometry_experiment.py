@@ -57,7 +57,7 @@ def main(args):
 
     if args.quick:
         # Just two environments
-        Xs = Xs[:2]
+        Xs = [X[:100] for X in Xs[:3]]
 
     for n_env, X in enumerate(Xs):
         mch.add_environment(X)

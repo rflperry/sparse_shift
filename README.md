@@ -25,6 +25,41 @@ pip install -e .
   - teaser_sparse_oracle_pc.ipynb
 - sparse_shift [code]
 
-## Replication instructions
+# Quick replication instructions
 
-### Teaser f
+## Teaser figure
+
+```console
+cd experiments
+```
+
+Then open and run `teaser_sparse_oracle_pc.ipynb` in that folder.
+
+## Oracle simulations
+
+```console
+cd experiments/main_simulations
+```
+
+## MSS comparison simulation
+
+```console
+cd experiments/main_simulations
+```
+
+## Other method simulations
+
+```console
+cd experiments/main_simulations
+```
+
+
+
+## Cytometry experiment
+
+```console
+cd experiments/cytometry
+python run_cytometry_experiment.py --quick
+```
+
+Then open and run `analyze_pvalues.ipynb` in that folder.
